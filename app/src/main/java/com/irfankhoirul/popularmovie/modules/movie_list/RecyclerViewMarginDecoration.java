@@ -13,7 +13,8 @@ public class RecyclerViewMarginDecoration extends RecyclerView.ItemDecoration {
     private final int columns;
     private int margin;
 
-    public RecyclerViewMarginDecoration(@IntRange(from = 0) int margin, @IntRange(from = 0) int columns) {
+    public RecyclerViewMarginDecoration(@IntRange(from = 0) int margin,
+                                        @IntRange(from = 0) int columns) {
         this.margin = margin;
         this.columns = columns;
     }

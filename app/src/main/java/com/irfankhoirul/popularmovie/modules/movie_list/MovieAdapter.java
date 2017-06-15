@@ -29,30 +29,33 @@ import butterknife.ButterKnife;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
 
-    private final String POSTER_PATH_BASE_URL = "https://image.tmdb.org/t/p/w185";
+    private final static String TAG = MovieAdapter.class.getSimpleName();
+    private final static String POSTER_PATH_BASE_URL = "https://image.tmdb.org/t/p/w185";
     private final MovieClickListener listener;
+
     private List<Movie> movies = new ArrayList<>();
     private int defaultTitleTextColor;
     private int defaultTitleBackgroundColor;
-    private int cardWidth;
 
-    public MovieAdapter(List<Movie> movies, MovieClickListener listener, int cardWidth) {
+    public MovieAdapter(List<Movie> movies, MovieClickListener listener) {
         this.listener = listener;
         this.movies = movies;
-        this.cardWidth = cardWidth;
     }
 
     @Override
     public MovieAdapter.MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (defaultTitleBackgroundColor == 0) {
-            defaultTitleBackgroundColor = ContextCompat.getColor(parent.getContext(), R.color.colorPrimary);
+            defaultTitleBackgroundColor = ContextCompat.getColor(
+                    parent.getContext(), R.color.colorPrimary);
         }
         if (defaultTitleTextColor == 0) {
-            defaultTitleTextColor = ContextCompat.getColor(parent.getContext(), android.R.color.white);
+            defaultTitleTextColor = ContextCompat.getColor(
+                    parent.getContext(), android.R.color.white);
         }
 
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_movie, parent, false);
+
         return new MovieViewHolder(itemView);
     }
 
@@ -69,12 +72,15 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
                     public void onSuccess() {
                         Palette.PaletteAsyncListener paletteListener = new Palette.PaletteAsyncListener() {
                             public void onGenerated(Palette palette) {
-                                holder.tvMovieTitle.setBackgroundColor(palette.getVibrantColor(defaultTitleBackgroundColor));
-                                holder.tvMovieTitle.setTextColor(palette.getLightMutedColor(defaultTitleTextColor));
+                                holder.tvMovieTitle.setBackgroundColor(
+                                        palette.getVibrantColor(defaultTitleBackgroundColor));
+                                holder.tvMovieTitle.setTextColor(
+                                        palette.getLightMutedColor(defaultTitleTextColor));
                             }
                         };
 
-                        Bitmap posterBitmap = ((BitmapDrawable) holder.ivMoviePoster.getDrawable()).getBitmap();
+                        Bitmap posterBitmap = ((BitmapDrawable) holder.ivMoviePoster.getDrawable())
+                                .getBitmap();
                         if (posterBitmap != null && !posterBitmap.isRecycled()) {
                             Palette.from(posterBitmap).generate(paletteListener);
                         }
@@ -82,7 +88,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
                     @Override
                     public void onError() {
-                        Log.e("Picasso", "An error occurred!");
+                        Log.e(TAG, holder.itemView.getContext().getString(R.string.message_error));
                     }
                 });
     }

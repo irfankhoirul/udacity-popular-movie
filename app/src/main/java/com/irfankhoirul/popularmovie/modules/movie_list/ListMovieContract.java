@@ -4,7 +4,7 @@ import android.support.annotation.Nullable;
 
 import com.irfankhoirul.popularmovie.data.pojo.Movie;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by Irfan Khoirul on 4/2/2017.
@@ -20,7 +20,9 @@ public interface ListMovieContract {
     }
 
     interface Presenter {
-        List<Movie> getMovieList();
+        ArrayList<Movie> getMovieList();
+
+        void setMovieList(ArrayList<Movie> movies);
 
         void getPopularMovies();
 

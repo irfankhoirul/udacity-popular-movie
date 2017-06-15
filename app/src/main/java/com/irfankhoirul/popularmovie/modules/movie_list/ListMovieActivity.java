@@ -22,6 +22,8 @@ import com.irfankhoirul.popularmovie.data.pojo.Movie;
 import com.irfankhoirul.popularmovie.modules.movie_detail.DetailMovieActivity;
 import com.irfankhoirul.popularmovie.util.DisplayMetricUtils;
 
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -35,7 +37,6 @@ public class ListMovieActivity extends AppCompatActivity
 
     private ListMovieContract.Presenter presenter;
     private MovieAdapter movieAdapter;
-    private int cardWidth;
     private AlertDialog loadingDialog;
 
     @Override
@@ -44,19 +45,40 @@ public class ListMovieActivity extends AppCompatActivity
         setContentView(R.layout.activity_list_movie);
         ButterKnife.bind(this);
 
-        presenter = new ListMoviePresenter(this);
+        presenter = new ListMoviePresenter(this, this);
 
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 2);
         rvMovies.setLayoutManager(layoutManager);
         int marginInPixel = DisplayMetricUtils.convertDpToPixel(8);
         int column = 2;
-        RecyclerViewMarginDecoration decoration = new RecyclerViewMarginDecoration(marginInPixel, column);
+        RecyclerViewMarginDecoration decoration =
+                new RecyclerViewMarginDecoration(marginInPixel, column);
         rvMovies.addItemDecoration(decoration);
-        cardWidth = DisplayMetricUtils.getDeviceWidth(this) - ((column + 1) * marginInPixel);
-        movieAdapter = new MovieAdapter(presenter.getMovieList(), this, cardWidth);
+        movieAdapter = new MovieAdapter(presenter.getMovieList(), this);
         rvMovies.setAdapter(movieAdapter);
 
-        presenter.getPopularMovies();
+        if (savedInstanceState != null) {
+            if (savedInstanceState.getString("toolbar_title") != null &&
+                    getSupportActionBar() != null) {
+                getSupportActionBar().setTitle(savedInstanceState.getString("toolbar_title"));
+            }
+
+            if (savedInstanceState.getParcelableArrayList("movies") != null) {
+                ArrayList<Movie> movies = savedInstanceState.getParcelableArrayList("movies");
+                presenter.setMovieList(movies);
+            }
+        } else {
+            presenter.getPopularMovies();
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList("movies", presenter.getMovieList());
+        if (getSupportActionBar() != null && getSupportActionBar().getTitle() != null) {
+            outState.putString("toolbar_title", getSupportActionBar().getTitle().toString());
+        }
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -94,10 +116,14 @@ public class ListMovieActivity extends AppCompatActivity
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (rbSortByPopularity.isChecked()) {
-                    getSupportActionBar().setTitle(R.string.title_popular_movies);
+                    if (getSupportActionBar() != null) {
+                        getSupportActionBar().setTitle(R.string.title_popular_movies);
+                    }
                     presenter.getPopularMovies();
                 } else if (rbSortByRating.isChecked()) {
-                    getSupportActionBar().setTitle(R.string.title_top_rated_movies);
+                    if (getSupportActionBar() != null) {
+                        getSupportActionBar().setTitle(R.string.title_top_rated_movies);
+                    }
                     presenter.getTopRatedMovies();
                 }
             }
@@ -136,7 +162,7 @@ public class ListMovieActivity extends AppCompatActivity
                 .setAction(R.string.action_retry, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-
+                        presenter.getPopularMovies();
                     }
                 });
 
@@ -151,7 +177,7 @@ public class ListMovieActivity extends AppCompatActivity
     @Override
     public void onMovieItemClick(Movie movie) {
         Intent intent = new Intent(this, DetailMovieActivity.class);
-//        intent.putExtra("movie", Parcels.wrap(movie));
+        intent.putExtra("movie", movie);
         startActivity(intent);
     }
 }

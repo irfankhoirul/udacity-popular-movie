@@ -8,4 +8,11 @@
     <string name="action_cancel">CANCEL</string>
     <string name="action_retry">RETRY</string>
     <string name="dialog_title_sort">Sort</string>
+    <string name="toolbar_title_movie_detail">Movie Detail</string>
+    <string name="message_loading_popular_movies">Getting Popular Movies List</string>
+    <string name="message_loading_top_rated_movies">Getting Top-Rated Movies List</string>
+    <string name="message_error_load_data">Cannot load data</string>
+    <string name="message_error">An error occurred!</string>
+    <string name="label_average_rating">Average rating:</string>
+    <string name="label_popularity">Popularity:</string>
 </resources>

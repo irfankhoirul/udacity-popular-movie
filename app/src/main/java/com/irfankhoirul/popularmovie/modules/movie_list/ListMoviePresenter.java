@@ -1,12 +1,12 @@
 package com.irfankhoirul.popularmovie.modules.movie_list;
 
+import com.irfankhoirul.popularmovie.R;
 import com.irfankhoirul.popularmovie.data.pojo.DataResult;
 import com.irfankhoirul.popularmovie.data.pojo.Movie;
 import com.irfankhoirul.popularmovie.data.source.MovieDataSource;
 import com.irfankhoirul.popularmovie.data.source.RequestCallback;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Irfan Khoirul on 6/15/2017.
@@ -16,21 +16,29 @@ public class ListMoviePresenter implements ListMovieContract.Presenter {
 
     private ListMovieContract.View mView;
     private MovieDataSource movieDataSource;
-    private List<Movie> movies = new ArrayList<>();
+    private ArrayList<Movie> movies = new ArrayList<>();
+    private ListMovieActivity activity;
 
-    public ListMoviePresenter(ListMovieContract.View mView) {
+    public ListMoviePresenter(ListMovieContract.View mView, ListMovieActivity activity) {
         movieDataSource = new MovieDataSource();
         this.mView = mView;
+        this.activity = activity;
     }
 
     @Override
-    public List<Movie> getMovieList() {
+    public ArrayList<Movie> getMovieList() {
         return movies;
     }
 
     @Override
+    public void setMovieList(ArrayList<Movie> movies) {
+        this.movies.addAll(movies);
+        mView.updateMovieList();
+    }
+
+    @Override
     public void getPopularMovies() {
-        mView.setLoading(true, "Getting Popular Movies");
+        mView.setLoading(true, activity.getString(R.string.message_loading_popular_movies));
         movieDataSource.getPopularMovies(new RequestCallback() {
             @Override
             public void onSuccess(DataResult dataResult) {
@@ -43,14 +51,14 @@ public class ListMoviePresenter implements ListMovieContract.Presenter {
             @Override
             public void onFailure(Throwable throwable) {
                 mView.setLoading(false, null);
-                mView.showError("Cannot load data");
+                mView.showError(activity.getString(R.string.message_error_load_data));
             }
         });
     }
 
     @Override
     public void getTopRatedMovies() {
-        mView.setLoading(true, "Getting Top-Rated Movies");
+        mView.setLoading(true, activity.getString(R.string.message_loading_top_rated_movies));
         movieDataSource.getTopRatedMovies(new RequestCallback() {
             @Override
             public void onSuccess(DataResult dataResult) {
@@ -63,7 +71,7 @@ public class ListMoviePresenter implements ListMovieContract.Presenter {
             @Override
             public void onFailure(Throwable throwable) {
                 mView.setLoading(false, null);
-                mView.showError("Cannot load data");
+                mView.showError(activity.getString(R.string.message_error_load_data));
             }
         });
     }

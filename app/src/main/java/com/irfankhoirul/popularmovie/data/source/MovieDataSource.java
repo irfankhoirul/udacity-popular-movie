@@ -20,6 +20,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MovieDataSource {
 
+    private static final String TAG = MovieDataSource.class.getSimpleName();
     private EndPoints endPoint;
 
     public MovieDataSource() {
@@ -50,7 +51,7 @@ public class MovieDataSource {
 
             @Override
             public void onFailure(Call call, Throwable t) {
-                Log.e("Error", t.getMessage());
+                Log.e(TAG, t.getMessage());
                 callback.onFailure(t);
             }
         });
