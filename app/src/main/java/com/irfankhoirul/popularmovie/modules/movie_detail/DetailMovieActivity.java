@@ -1,9 +1,11 @@
-package com.irfankhoirul.popularmovie;
+package com.irfankhoirul.popularmovie.modules.movie_detail;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class DetailActivity extends AppCompatActivity {
+import com.irfankhoirul.popularmovie.R;
+
+public class DetailMovieActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -1,3 +1,11 @@
 <resources>
-    <string name="app_name">Popular Movie</string>
+    <string name="title_popular_movies">Popular Movies</string>
+    <string name="title_top_rated_movies">Top-Rated Movies</string>
+    <string name="action_menu_sort">Sort</string>
+    <string name="sort_most_popular">Most Popular</string>
+    <string name="sort_top_rated">Top Rated</string>
+    <string name="action_ok">OK</string>
+    <string name="action_cancel">CANCEL</string>
+    <string name="action_retry">RETRY</string>
+    <string name="dialog_title_sort">Sort</string>
 </resources>
