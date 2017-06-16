@@ -42,10 +42,14 @@ public class ListMoviePresenter implements ListMovieContract.Presenter {
         movieDataSource.getPopularMovies(new RequestCallback() {
             @Override
             public void onSuccess(DataResult dataResult) {
-                movies.clear();
-                movies.addAll(dataResult.getResults());
-                mView.updateMovieList();
-                mView.setLoading(false, null);
+                if (dataResult != null) {
+                    movies.clear();
+                    movies.addAll(dataResult.getResults());
+                    mView.updateMovieList();
+                    mView.setLoading(false, null);
+                } else {
+                    onFailure();
+                }
             }
 
             @Override
@@ -62,10 +66,14 @@ public class ListMoviePresenter implements ListMovieContract.Presenter {
         movieDataSource.getTopRatedMovies(new RequestCallback() {
             @Override
             public void onSuccess(DataResult dataResult) {
-                movies.clear();
-                movies.addAll(dataResult.getResults());
-                mView.updateMovieList();
-                mView.setLoading(false, null);
+                if (dataResult != null) {
+                    movies.clear();
+                    movies.addAll(dataResult.getResults());
+                    mView.updateMovieList();
+                    mView.setLoading(false, null);
+                } else {
+                    onFailure();
+                }
             }
 
             @Override

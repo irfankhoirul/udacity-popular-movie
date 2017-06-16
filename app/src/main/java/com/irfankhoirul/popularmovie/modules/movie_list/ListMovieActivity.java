@@ -2,9 +2,9 @@ package com.irfankhoirul.popularmovie.modules.movie_list;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -166,11 +166,12 @@ public class ListMovieActivity extends AppCompatActivity
                     }
                 });
 
-        snackbar.setActionTextColor(Color.RED);
+        snackbar.setActionTextColor(ContextCompat.getColor(this, R.color.red_700));
 
         View sbView = snackbar.getView();
+        sbView.setBackgroundColor(ContextCompat.getColor(this, R.color.red_100));
         TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
-        textView.setTextColor(Color.YELLOW);
+        textView.setTextColor(ContextCompat.getColor(this, R.color.red_700));
         snackbar.show();
     }
 
