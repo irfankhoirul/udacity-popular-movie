@@ -2,7 +2,6 @@ package com.irfankhoirul.popularmovie.modules.movie_detail;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -51,19 +50,9 @@ public class DetailMovieActivity extends AppCompatActivity {
             Picasso.with(this)
                     .load(POSTER_PATH_BASE_URL + movie.getPosterPath())
                     .placeholder(R.drawable.image_placeholder)
-                    .into(ivMoviePoster, new com.squareup.picasso.Callback() {
-                        @Override
-                        public void onSuccess() {
+                    .into(ivMoviePoster);
 
-                        }
-
-                        @Override
-                        public void onError() {
-                            Log.e(TAG, getResources().getString(R.string.message_error));
-                        }
-                    });
-
-            tvMovieTitle.setText(movie.getTitle());
+            tvMovieTitle.setText(movie.getOriginalTitle());
 
             String averageRating = getString(R.string.label_average_rating) + movie.getVoteAverage();
             tvAverageRating.setText(averageRating);
