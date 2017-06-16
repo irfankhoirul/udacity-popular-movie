@@ -49,7 +49,7 @@ public class ListMoviePresenter implements ListMovieContract.Presenter {
             }
 
             @Override
-            public void onFailure(Throwable throwable) {
+            public void onFailure() {
                 mView.setLoading(false, null);
                 mView.showError(activity.getString(R.string.message_error_load_data));
             }
@@ -69,7 +69,7 @@ public class ListMoviePresenter implements ListMovieContract.Presenter {
             }
 
             @Override
-            public void onFailure(Throwable throwable) {
+            public void onFailure() {
                 mView.setLoading(false, null);
                 mView.showError(activity.getString(R.string.message_error_load_data));
             }

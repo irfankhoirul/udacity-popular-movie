@@ -10,7 +10,7 @@ import retrofit2.http.GET;
  */
 
 public interface EndPoints {
-    String THE_MOVIE_DB_API_KEY = "74fedab3fd9268320c52a2b5e37435d3";
+    String THE_MOVIE_DB_API_KEY = "<your_the_movie_db_API_key_here>";
     String POPULAR_MOVIE_END_POINT = "movie/popular?api_key=" + THE_MOVIE_DB_API_KEY;
     String TOP_RATED_MOVIE_END_POINT = "movie/top_rated?api_key=" + THE_MOVIE_DB_API_KEY;
 

@@ -9,5 +9,5 @@ import com.irfankhoirul.popularmovie.data.pojo.DataResult;
 public interface RequestCallback {
     void onSuccess(DataResult dataResult);
 
-    void onFailure(Throwable throwable);
+    void onFailure();
 }

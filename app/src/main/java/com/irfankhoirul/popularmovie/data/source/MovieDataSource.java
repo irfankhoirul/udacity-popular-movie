@@ -1,5 +1,6 @@
 package com.irfankhoirul.popularmovie.data.source;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.irfankhoirul.popularmovie.data.pojo.DataResult;
@@ -42,17 +43,18 @@ public class MovieDataSource {
         endPoint = retrofit.create(EndPoints.class);
     }
 
+    @SuppressWarnings("unchecked")
     private void execute(Call<DataResult> call, final RequestCallback callback) {
         call.enqueue(new Callback() {
             @Override
-            public void onResponse(Call call, Response response) {
+            public void onResponse(@NonNull Call call, @NonNull Response response) {
                 callback.onSuccess((DataResult) response.body());
             }
 
             @Override
-            public void onFailure(Call call, Throwable t) {
+            public void onFailure(@NonNull Call call, @NonNull Throwable t) {
                 Log.e(TAG, t.getMessage());
-                callback.onFailure(t);
+                callback.onFailure();
             }
         });
     }

@@ -7,7 +7,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         tools:context=".modules.movie_detail.DetailMovieActivity">
 
         <ImageView
@@ -20,6 +20,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:contentDescription="@string/image_content_description_movie_poster"
             android:scaleType="centerCrop"
             app:srcCompat="@drawable/image_placeholder" />
 
@@ -34,7 +35,6 @@
             android:layout_toRightOf="@id/iv_movie_poster"
             android:fontFamily="sans-serif-medium"
             android:maxLines="16"
-            android:text="The Mummy: Very long title here"
             android:textColor="@color/colorAccent"
             android:textSize="20sp" />
 
@@ -47,11 +47,10 @@
             android:layout_marginRight="16dp"
             android:layout_marginTop="8dp"
             android:layout_toEndOf="@id/iv_movie_poster"
-            android:layout_toRightOf="@id/iv_movie_poster"
-            android:text="Average rating: 6.5 / 10" />
+            android:layout_toRightOf="@id/iv_movie_poster" />
 
         <TextView
-            android:id="@+id/tv_popularity"
+            android:id="@+id/tv_release_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_average_rating"
@@ -59,20 +58,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="4dp"
             android:layout_toEndOf="@id/iv_movie_poster"
-            android:layout_toRightOf="@id/iv_movie_poster"
-            android:text="Popularity: 77%" />
-
-        <TextView
-            android:id="@+id/tv_release_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_popularity"
-            android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="4dp"
-            android:layout_toEndOf="@id/iv_movie_poster"
-            android:layout_toRightOf="@id/iv_movie_poster"
-            android:text="June 2017" />
+            android:layout_toRightOf="@id/iv_movie_poster" />
 
         <TextView
             android:id="@+id/textView6"
@@ -83,7 +69,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:fontFamily="sans-serif-medium"
-            android:text="Synopsis"
+            android:text="@string/label_synopsis"
             android:textColor="@color/colorAccent"
             android:textSize="20sp" />
 
@@ -97,7 +83,6 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:text="TextView" />
+            android:layout_marginTop="8dp" />
     </RelativeLayout>
 </ScrollView>

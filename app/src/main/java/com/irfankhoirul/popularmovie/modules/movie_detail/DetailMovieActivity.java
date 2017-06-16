@@ -28,8 +28,6 @@ public class DetailMovieActivity extends AppCompatActivity {
     TextView tvMovieTitle;
     @BindView(R.id.tv_average_rating)
     TextView tvAverageRating;
-    @BindView(R.id.tv_popularity)
-    TextView tvPopularity;
     @BindView(tv_release_date)
     TextView tvReleaseDate;
     @BindView(R.id.tv_synopsis)
@@ -69,9 +67,6 @@ public class DetailMovieActivity extends AppCompatActivity {
 
             String averageRating = getString(R.string.label_average_rating) + movie.getVoteAverage();
             tvAverageRating.setText(averageRating);
-
-            String popularity = getString(R.string.label_popularity) + movie.getPopularity();
-            tvPopularity.setText(popularity);
 
             tvReleaseDate.setText(DateUtil.formatDate(movie.getReleaseDate(),
                     "yyyy-M-dd", "dd MMMM yyyy"));

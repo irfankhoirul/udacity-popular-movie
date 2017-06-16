@@ -13,7 +13,7 @@ public class DateUtil {
 
     public static String formatDate(String dateInput, String inputFormat, String outputFormat) {
         SimpleDateFormat sdf = new SimpleDateFormat(inputFormat, Locale.getDefault());
-        Date date = null;
+        Date date;
         try {
             date = sdf.parse(dateInput);
             SimpleDateFormat newDateFormat = new SimpleDateFormat(
