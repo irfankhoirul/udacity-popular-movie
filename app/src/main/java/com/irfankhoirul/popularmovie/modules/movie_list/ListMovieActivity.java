@@ -48,16 +48,12 @@ public class ListMovieActivity extends AppCompatActivity
 
         presenter = new ListMoviePresenter(this, this);
 
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 2);
-        rvMovies.setLayoutManager(layoutManager);
-        int marginInPixel = DisplayMetricUtils.convertDpToPixel(8);
-        int column = 2;
-        RecyclerViewMarginDecoration decoration =
-                new RecyclerViewMarginDecoration(marginInPixel, column);
-        rvMovies.addItemDecoration(decoration);
-        movieAdapter = new MovieAdapter(presenter.getMovieList(), this);
-        rvMovies.setAdapter(movieAdapter);
+        setupMovieRecyclerView();
 
+        setupMovieData(savedInstanceState);
+    }
+
+    private void setupMovieData(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             if (savedInstanceState.getString("toolbar_title") != null &&
                     getSupportActionBar() != null) {
@@ -71,6 +67,18 @@ public class ListMovieActivity extends AppCompatActivity
         } else {
             getMoviesByPreference();
         }
+    }
+
+    private void setupMovieRecyclerView() {
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 2);
+        rvMovies.setLayoutManager(layoutManager);
+        int marginInPixel = DisplayMetricUtils.convertDpToPixel(8);
+        int column = 2;
+        RecyclerViewMarginDecoration decoration =
+                new RecyclerViewMarginDecoration(marginInPixel, column);
+        rvMovies.addItemDecoration(decoration);
+        movieAdapter = new MovieAdapter(presenter.getMovieList(), this);
+        rvMovies.setAdapter(movieAdapter);
     }
 
     @Override

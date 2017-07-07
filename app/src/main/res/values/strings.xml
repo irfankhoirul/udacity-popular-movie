@@ -16,4 +16,11 @@
     <string name="label_average_rating">Average rating:&#160;</string>
     <string name="image_content_description_movie_poster">Movie Poster</string>
     <string name="label_synopsis">Synopsis</string>
+    <string name="label_trailer">Trailers</string>
+    <string name="label_review">Reviews</string>
+    <string name="image_content_description_play_button">Play Button</string>
+    <string name="image_content_description_sad_emoji">Sad Emoji</string>
+    <string name="image_content_description_trailer_thumbnail">Trailer Thumbnail</string>
+    <string name="label_no_trailer_found">No Trailer Found</string>
+    <string name="label_no_review_found">No Review Found</string>
 </resources>

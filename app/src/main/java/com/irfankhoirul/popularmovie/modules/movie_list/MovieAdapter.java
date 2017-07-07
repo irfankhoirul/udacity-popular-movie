@@ -23,11 +23,23 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * Created by Irfan Khoirul on 6/14/2017.
+/*
+ * Copyright 2017.  Irfan Khoirul Muhlishin
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
-public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
+class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
 
     private final static String TAG = MovieAdapter.class.getSimpleName();
     private final static String POSTER_PATH_BASE_URL = "https://image.tmdb.org/t/p/w185";
@@ -37,7 +49,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     private int defaultTitleTextColor;
     private int defaultTitleBackgroundColor;
 
-    public MovieAdapter(List<Movie> movies, MovieClickListener listener) {
+    MovieAdapter(List<Movie> movies, MovieClickListener listener) {
         this.listener = listener;
         this.movies = movies;
     }
@@ -98,7 +110,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         return movies.size();
     }
 
-    public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public interface MovieClickListener {
+        void onMovieItemClick(Movie movie);
+    }
+
+    class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R.id.cv_movie)
         CardView cvMovie;
         @BindView(R.id.iv_movie_poster)
@@ -116,9 +132,5 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         public void onClick(View v) {
             listener.onMovieItemClick(movies.get(getAdapterPosition()));
         }
-    }
-
-    public interface MovieClickListener {
-        void onMovieItemClick(Movie movie);
     }
 }

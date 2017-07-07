@@ -1,6 +1,7 @@
 package com.irfankhoirul.popularmovie.util;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
 
@@ -19,9 +20,9 @@ public class DisplayMetricUtils {
         return Math.round(px);
     }
 
-    public static int getDeviceWidth(Activity activity) {
+    public static int getDeviceWidth(Context activity) {
         DisplayMetrics displaymetrics = new DisplayMetrics();
-        activity.getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        ((Activity) activity).getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         return displaymetrics.widthPixels;
     }
 

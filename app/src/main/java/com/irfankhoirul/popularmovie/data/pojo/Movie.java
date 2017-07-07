@@ -7,63 +7,73 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-/**
- * Created by Irfan Khoirul on 6/15/2017.
+/*
+ * Copyright 2017.  Irfan Khoirul Muhlishin
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 public class Movie implements Parcelable {
+    public static final Creator<Movie> CREATOR = new Creator<Movie>() {
+        @Override
+        public Movie createFromParcel(android.os.Parcel in) {
+            return new Movie(in);
+        }
+
+        @Override
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
     @SerializedName("vote_count")
     @Expose
     private int voteCount;
-
     @SerializedName("id")
     @Expose
     private int id;
-
     @SerializedName("video")
     @Expose
     private boolean video;
-
     @SerializedName("vote_average")
     @Expose
     private double voteAverage;
-
     @SerializedName("title")
     @Expose
     private String title;
-
     @SerializedName("popularity")
     @Expose
     private double popularity;
-
     @SerializedName("poster_path")
     @Expose
     private String posterPath;
-
     @SerializedName("original_language")
     @Expose
     private String originalLanguage;
-
     @SerializedName("original_title")
     @Expose
     private String originalTitle;
-
     @SerializedName("genre_ids")
     @Expose
     private List<Integer> genreIds;
-
     @SerializedName("backdrop_path")
     @Expose
     private String backdropPath;
-
     @SerializedName("adult")
     @Expose
     private boolean adult;
-
     @SerializedName("overview")
     @Expose
     private String overview;
-
     @SerializedName("release_date")
     @Expose
     private String releaseDate;
@@ -83,18 +93,6 @@ public class Movie implements Parcelable {
         overview = in.readString();
         releaseDate = in.readString();
     }
-
-    public static final Creator<Movie> CREATOR = new Creator<Movie>() {
-        @Override
-        public Movie createFromParcel(android.os.Parcel in) {
-            return new Movie(in);
-        }
-
-        @Override
-        public Movie[] newArray(int size) {
-            return new Movie[size];
-        }
-    };
 
     public int getVoteCount() {
         return voteCount;
