@@ -1,9 +1,12 @@
-package com.irfankhoirul.popularmovie.data.source;
+package com.irfankhoirul.popularmovie.data.source.remote;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.irfankhoirul.popularmovie.data.pojo.DataResult;
+import com.irfankhoirul.popularmovie.data.pojo.Movie;
+import com.irfankhoirul.popularmovie.data.pojo.Review;
+import com.irfankhoirul.popularmovie.data.pojo.Trailer;
 
 import java.util.concurrent.TimeUnit;
 
@@ -19,12 +22,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by Irfan Khoirul on 6/15/2017.
  */
 
-public class MovieDataSource {
+public class MovieDataSourceImpl implements MovieDataSource {
+    public static final String SORT_POPULAR = "popular";
+    public static final String SORT_TOP_RATED = "top_rated";
 
-    private static final String TAG = MovieDataSource.class.getSimpleName();
+    private static final String TAG = MovieDataSourceImpl.class.getSimpleName();
     private EndPoints endPoint;
 
-    public MovieDataSource() {
+    public MovieDataSourceImpl() {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
@@ -44,11 +49,11 @@ public class MovieDataSource {
     }
 
     @SuppressWarnings("unchecked")
-    private void execute(Call<DataResult> call, final RequestCallback callback) {
+    private <T> void execute(Call<DataResult<T>> call, final RequestCallback callback) {
         call.enqueue(new Callback() {
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) {
-                callback.onSuccess((DataResult) response.body());
+                callback.onSuccess((DataResult<T>) response.body());
             }
 
             @Override
@@ -59,13 +64,21 @@ public class MovieDataSource {
         });
     }
 
-    public void getPopularMovies(RequestCallback callback) {
-        Call<DataResult> call = endPoint.getPopularMovies();
+    @Override
+    public void getMovies(String sort, RequestCallback callback) {
+        Call<DataResult<Movie>> call = endPoint.getMovies(sort);
         execute(call, callback);
     }
 
-    public void getTopRatedMovies(RequestCallback callback) {
-        Call<DataResult> call = endPoint.getTopRatedMovies();
+    @Override
+    public void getTrailer(int id, RequestCallback callback) {
+        Call<DataResult<Trailer>> call = endPoint.getTrailer(id);
+        execute(call, callback);
+    }
+
+    @Override
+    public void getReviews(int id, RequestCallback callback) {
+        Call<DataResult<Review>> call = endPoint.getReviews(id);
         execute(call, callback);
     }
 

@@ -9,7 +9,7 @@ import java.util.List;
  * Created by Irfan Khoirul on 6/15/2017.
  */
 
-public class DataResult {
+public class DataResult<T> {
     @SerializedName("page")
     @Expose
     private int page;
@@ -24,7 +24,7 @@ public class DataResult {
 
     @SerializedName("results")
     @Expose
-    private List<Movie> results;
+    private List<T> results;
 
     public int getPage() {
         return page;
@@ -50,11 +50,11 @@ public class DataResult {
         this.totalPages = totalPages;
     }
 
-    public List<Movie> getResults() {
+    public List<T> getResults() {
         return results;
     }
 
-    public void setResults(List<Movie> results) {
+    public void setResults(List<T> results) {
         this.results = results;
     }
 }

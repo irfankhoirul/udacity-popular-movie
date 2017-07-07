@@ -24,8 +24,10 @@ public interface ListMovieContract {
 
         void setMovieList(ArrayList<Movie> movies);
 
-        void getPopularMovies();
+        void getMovies(String sort);
 
-        void getTopRatedMovies();
+        String getSortPreference();
+
+        void setSortPreference(String sort);
     }
 }

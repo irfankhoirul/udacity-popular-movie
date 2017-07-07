@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.irfankhoirul.popularmovie.R;
 import com.irfankhoirul.popularmovie.data.pojo.Movie;
+import com.irfankhoirul.popularmovie.data.source.remote.MovieDataSourceImpl;
 import com.irfankhoirul.popularmovie.modules.movie_detail.DetailMovieActivity;
 import com.irfankhoirul.popularmovie.util.DisplayMetricUtils;
 
@@ -68,7 +69,7 @@ public class ListMovieActivity extends AppCompatActivity
                 presenter.setMovieList(movies);
             }
         } else {
-            presenter.getPopularMovies();
+            getMoviesByPreference();
         }
     }
 
@@ -112,6 +113,11 @@ public class ListMovieActivity extends AppCompatActivity
 
         final RadioButton rbSortByPopularity = (RadioButton) dialogView.findViewById(R.id.rb_sort_by_popularity);
         final RadioButton rbSortByRating = (RadioButton) dialogView.findViewById(R.id.rb_sort_by_rating);
+        if (presenter.getSortPreference().equals(MovieDataSourceImpl.SORT_POPULAR)) {
+            rbSortByPopularity.setChecked(true);
+        } else if (presenter.getSortPreference().equals(MovieDataSourceImpl.SORT_TOP_RATED)) {
+            rbSortByRating.setChecked(true);
+        }
         dialogBuilder.setPositiveButton(R.string.action_ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -119,12 +125,12 @@ public class ListMovieActivity extends AppCompatActivity
                     if (getSupportActionBar() != null) {
                         getSupportActionBar().setTitle(R.string.title_popular_movies);
                     }
-                    presenter.getPopularMovies();
+                    presenter.getMovies(MovieDataSourceImpl.SORT_POPULAR);
                 } else if (rbSortByRating.isChecked()) {
                     if (getSupportActionBar() != null) {
                         getSupportActionBar().setTitle(R.string.title_top_rated_movies);
                     }
-                    presenter.getTopRatedMovies();
+                    presenter.getMovies(MovieDataSourceImpl.SORT_TOP_RATED);
                 }
             }
         });
@@ -162,7 +168,7 @@ public class ListMovieActivity extends AppCompatActivity
                 .setAction(R.string.action_retry, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        presenter.getPopularMovies();
+                        getMoviesByPreference();
                     }
                 });
 
@@ -180,5 +186,23 @@ public class ListMovieActivity extends AppCompatActivity
         Intent intent = new Intent(this, DetailMovieActivity.class);
         intent.putExtra("movie", movie);
         startActivity(intent);
+    }
+
+    private void getMoviesByPreference() {
+        if (presenter.getSortPreference() != null) {
+            if (presenter.getSortPreference().equals(MovieDataSourceImpl.SORT_POPULAR)) {
+                if (getSupportActionBar() != null) {
+                    getSupportActionBar().setTitle(getString(R.string.title_popular_movies));
+                }
+                presenter.getMovies(MovieDataSourceImpl.SORT_POPULAR);
+            } else {
+                if (getSupportActionBar() != null) {
+                    getSupportActionBar().setTitle(getString(R.string.title_top_rated_movies));
+                }
+                presenter.getMovies(MovieDataSourceImpl.SORT_TOP_RATED);
+            }
+        } else {
+            presenter.getMovies(MovieDataSourceImpl.SORT_POPULAR);
+        }
     }
 }
