@@ -1,4 +1,4 @@
-package com.irfankhoirul.popularmovie.data.source.local;
+package com.irfankhoirul.popularmovie.data.source.local.preference;
 
 /*
  * Copyright 2017.  Irfan Khoirul Muhlishin

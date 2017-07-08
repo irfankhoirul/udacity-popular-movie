@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.irfankhoirul.popularmovie.R;
@@ -38,6 +39,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.irfankhoirul.popularmovie.R.id.rating_bar;
 import static com.irfankhoirul.popularmovie.R.id.tv_release_date;
 
 public class DetailMovieActivity extends AppCompatActivity
@@ -87,6 +89,10 @@ public class DetailMovieActivity extends AppCompatActivity
     LinearLayout llNoReview;
     @BindView(R.id.fl_review)
     FrameLayout flReview;
+    @BindView(rating_bar)
+    RatingBar ratingBar;
+    @BindView(R.id.tv_vote_count)
+    TextView tvVoteCount;
 
     private DetailMovieContract.Presenter presenter;
     private TrailerAdapter trailerAdapter;
@@ -166,12 +172,12 @@ public class DetailMovieActivity extends AppCompatActivity
 
         tvMovieTitle.setText(presenter.getMovie().getOriginalTitle());
 
-        String averageRating = getString(R.string.label_average_rating) + presenter.getMovie().getVoteAverage();
+        String averageRating = String.valueOf(presenter.getMovie().getVoteAverage());
         tvAverageRating.setText(averageRating);
-
+        ratingBar.setRating((float) presenter.getMovie().getVoteAverage() / 2.0f);
+        tvVoteCount.setText(String.valueOf(presenter.getMovie().getVoteCount()));
         tvReleaseDate.setText(DateUtil.formatDate(presenter.getMovie().getReleaseDate(),
                 "yyyy-M-dd", "dd MMMM yyyy"));
-
         tvSynopsis.setText(presenter.getMovie().getOverview());
     }
 

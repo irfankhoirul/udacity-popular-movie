@@ -21,6 +21,12 @@
         <activity
             android:name=".modules.movie_detail.DetailMovieActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <provider
+            android:name=".data.source.local.favorite.FavoriteMovieContentProvider"
+            android:authorities="com.irfankhoirul.popularmovie"
+            android:exported="true"
+            android:permission="com.irfankhoirul.popularmovie.data.source.local.favorite.READ_WRITE" />
     </application>
 
 </manifest>

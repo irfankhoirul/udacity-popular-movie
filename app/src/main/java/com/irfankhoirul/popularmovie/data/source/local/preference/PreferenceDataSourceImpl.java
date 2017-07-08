@@ -1,4 +1,4 @@
-package com.irfankhoirul.popularmovie.data.source.local;
+package com.irfankhoirul.popularmovie.data.source.local.preference;
 
 import android.content.Context;
 import android.content.SharedPreferences;

@@ -1,11 +1,31 @@
 package com.irfankhoirul.popularmovie.data.pojo;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
+import android.content.ContentValues;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
+
+import static com.irfankhoirul.popularmovie.data.source.local.favorite.FavoriteMovieContract.MovieEntry.COLUMN_ADULT;
+import static com.irfankhoirul.popularmovie.data.source.local.favorite.FavoriteMovieContract.MovieEntry.COLUMN_BACKDROP_PATH;
+import static com.irfankhoirul.popularmovie.data.source.local.favorite.FavoriteMovieContract.MovieEntry.COLUMN_ID;
+import static com.irfankhoirul.popularmovie.data.source.local.favorite.FavoriteMovieContract.MovieEntry.COLUMN_ORIGINAL_LANGUAGE;
+import static com.irfankhoirul.popularmovie.data.source.local.favorite.FavoriteMovieContract.MovieEntry.COLUMN_ORIGINAL_TITLE;
+import static com.irfankhoirul.popularmovie.data.source.local.favorite.FavoriteMovieContract.MovieEntry.COLUMN_OVERVIEW;
+import static com.irfankhoirul.popularmovie.data.source.local.favorite.FavoriteMovieContract.MovieEntry.COLUMN_POPULARITY;
+import static com.irfankhoirul.popularmovie.data.source.local.favorite.FavoriteMovieContract.MovieEntry.COLUMN_POSTER_PATH;
+import static com.irfankhoirul.popularmovie.data.source.local.favorite.FavoriteMovieContract.MovieEntry.COLUMN_RELEASE_DATE;
+import static com.irfankhoirul.popularmovie.data.source.local.favorite.FavoriteMovieContract.MovieEntry.COLUMN_TITLE;
+import static com.irfankhoirul.popularmovie.data.source.local.favorite.FavoriteMovieContract.MovieEntry.COLUMN_VIDEO;
+import static com.irfankhoirul.popularmovie.data.source.local.favorite.FavoriteMovieContract.MovieEntry.COLUMN_VOTE_AVERAGE;
+import static com.irfankhoirul.popularmovie.data.source.local.favorite.FavoriteMovieContract.MovieEntry.COLUMN_VOTE_COUNT;
+import static com.irfankhoirul.popularmovie.data.source.local.favorite.FavoriteMovieContract.MovieEntry.TABLE_NAME;
 
 /*
  * Copyright 2017.  Irfan Khoirul Muhlishin
@@ -23,7 +43,9 @@ import java.util.List;
  * limitations under the License.
  */
 
+@Entity(tableName = TABLE_NAME)
 public class Movie implements Parcelable {
+
     public static final Creator<Movie> CREATOR = new Creator<Movie>() {
         @Override
         public Movie createFromParcel(android.os.Parcel in) {
@@ -35,52 +57,84 @@ public class Movie implements Parcelable {
             return new Movie[size];
         }
     };
-    @SerializedName("vote_count")
-    @Expose
-    private int voteCount;
+
+    @PrimaryKey
+    @ColumnInfo(index = true, name = COLUMN_ID)
     @SerializedName("id")
     @Expose
-    private int id;
-    @SerializedName("video")
+    public long id;
+
+    @ColumnInfo(name = COLUMN_VOTE_COUNT)
+    @SerializedName(COLUMN_VOTE_COUNT)
+    @Expose
+    private int voteCount;
+
+    @ColumnInfo(name = COLUMN_VIDEO)
+    @SerializedName(COLUMN_VIDEO)
     @Expose
     private boolean video;
-    @SerializedName("vote_average")
+
+    @ColumnInfo(name = COLUMN_VOTE_AVERAGE)
+    @SerializedName(COLUMN_VOTE_AVERAGE)
     @Expose
     private double voteAverage;
-    @SerializedName("title")
+
+    @ColumnInfo(name = COLUMN_TITLE)
+    @SerializedName(COLUMN_TITLE)
     @Expose
     private String title;
-    @SerializedName("popularity")
+
+    @ColumnInfo(name = COLUMN_POPULARITY)
+    @SerializedName(COLUMN_POPULARITY)
     @Expose
     private double popularity;
-    @SerializedName("poster_path")
+
+    @ColumnInfo(name = COLUMN_POSTER_PATH)
+    @SerializedName(COLUMN_POSTER_PATH)
     @Expose
     private String posterPath;
-    @SerializedName("original_language")
+
+    @ColumnInfo(name = COLUMN_ORIGINAL_LANGUAGE)
+    @SerializedName(COLUMN_ORIGINAL_LANGUAGE)
     @Expose
     private String originalLanguage;
-    @SerializedName("original_title")
+
+    @ColumnInfo(name = COLUMN_ORIGINAL_TITLE)
+    @SerializedName(COLUMN_ORIGINAL_TITLE)
     @Expose
     private String originalTitle;
+
+    @Ignore
     @SerializedName("genre_ids")
     @Expose
     private List<Integer> genreIds;
-    @SerializedName("backdrop_path")
+
+    @ColumnInfo(name = COLUMN_BACKDROP_PATH)
+    @SerializedName(COLUMN_BACKDROP_PATH)
     @Expose
     private String backdropPath;
-    @SerializedName("adult")
+
+    @ColumnInfo(name = COLUMN_ADULT)
+    @SerializedName(COLUMN_ADULT)
     @Expose
     private boolean adult;
-    @SerializedName("overview")
+
+    @ColumnInfo(name = COLUMN_OVERVIEW)
+    @SerializedName(COLUMN_OVERVIEW)
     @Expose
     private String overview;
-    @SerializedName("release_date")
+
+    @ColumnInfo(name = COLUMN_RELEASE_DATE)
+    @SerializedName(COLUMN_RELEASE_DATE)
     @Expose
     private String releaseDate;
 
+    public Movie() {
+    }
+
     protected Movie(android.os.Parcel in) {
         voteCount = in.readInt();
-        id = in.readInt();
+        id = in.readLong();
         video = in.readByte() != 0;
         voteAverage = in.readDouble();
         title = in.readString();
@@ -94,6 +148,50 @@ public class Movie implements Parcelable {
         releaseDate = in.readString();
     }
 
+    public static Movie fromContentValues(ContentValues values) {
+        final Movie movie = new Movie();
+        if (values.containsKey(COLUMN_ID)) {
+            movie.id = values.getAsLong(COLUMN_ID);
+        }
+        if (values.containsKey(COLUMN_VOTE_COUNT)) {
+            movie.voteCount = values.getAsInteger(COLUMN_VOTE_COUNT);
+        }
+        if (values.containsKey(COLUMN_VIDEO)) {
+            movie.video = values.getAsBoolean(COLUMN_VIDEO);
+        }
+        if (values.containsKey(COLUMN_VOTE_AVERAGE)) {
+            movie.voteAverage = values.getAsDouble(COLUMN_VOTE_AVERAGE);
+        }
+        if (values.containsKey(COLUMN_TITLE)) {
+            movie.title = values.getAsString(COLUMN_TITLE);
+        }
+        if (values.containsKey(COLUMN_POPULARITY)) {
+            movie.popularity = values.getAsDouble(COLUMN_POPULARITY);
+        }
+        if (values.containsKey(COLUMN_POSTER_PATH)) {
+            movie.posterPath = values.getAsString(COLUMN_POSTER_PATH);
+        }
+        if (values.containsKey(COLUMN_ORIGINAL_LANGUAGE)) {
+            movie.originalLanguage = values.getAsString(COLUMN_ORIGINAL_LANGUAGE);
+        }
+        if (values.containsKey(COLUMN_ORIGINAL_TITLE)) {
+            movie.originalTitle = values.getAsString(COLUMN_ORIGINAL_TITLE);
+        }
+        if (values.containsKey(COLUMN_BACKDROP_PATH)) {
+            movie.backdropPath = values.getAsString(COLUMN_BACKDROP_PATH);
+        }
+        if (values.containsKey(COLUMN_ADULT)) {
+            movie.adult = values.getAsBoolean(COLUMN_ADULT);
+        }
+        if (values.containsKey(COLUMN_OVERVIEW)) {
+            movie.overview = values.getAsString(COLUMN_OVERVIEW);
+        }
+        if (values.containsKey(COLUMN_RELEASE_DATE)) {
+            movie.releaseDate = values.getAsString(COLUMN_RELEASE_DATE);
+        }
+        return movie;
+    }
+
     public int getVoteCount() {
         return voteCount;
     }
@@ -102,11 +200,11 @@ public class Movie implements Parcelable {
         this.voteCount = voteCount;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -234,7 +332,7 @@ public class Movie implements Parcelable {
     @Override
     public void writeToParcel(android.os.Parcel dest, int flags) {
         dest.writeInt(voteCount);
-        dest.writeInt(id);
+        dest.writeLong(id);
         dest.writeByte((byte) (video ? 1 : 0));
         dest.writeDouble(voteAverage);
         dest.writeString(title);

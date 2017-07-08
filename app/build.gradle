@@ -37,6 +37,10 @@ dependencies {
     compile 'com.android.support:palette-v7:25.3.1'
     compile 'com.android.support:customtabs:25.3.1'
 
+    //Android Room Persistence Library
+    compile 'android.arch.persistence.room:runtime:1.0.0-alpha3'
+    annotationProcessor 'android.arch.persistence.room:compiler:1.0.0-alpha3'
+
     //Butterknife, for resource binding
     compile 'com.jakewharton:butterknife:8.6.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.6.0'
