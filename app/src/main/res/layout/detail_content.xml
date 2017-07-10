@@ -24,7 +24,7 @@
             android:layout_marginTop="16dp"
             android:contentDescription="@string/image_content_description_movie_poster"
             android:scaleType="centerCrop"
-            app:srcCompat="@drawable/image_placeholder" />
+            app:srcCompat="@drawable/ic_movie_paceholder" />
 
         <TextView
             android:id="@+id/tv_movie_title"
@@ -192,11 +192,12 @@
             android:textColor="@color/colorAccent"
             android:textSize="20sp" />
 
-        <FrameLayout
-            android:id="@+id/fl_review"
+        <LinearLayout
+            android:id="@+id/ll_review"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/textView7">
+            android:layout_below="@id/textView7"
+            android:orientation="vertical">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_reviews"
@@ -238,6 +239,6 @@
                 app:indicatorColor="@color/colorAccent"
                 app:indicatorName="BallPulseIndicator" />
 
-        </FrameLayout>
+        </LinearLayout>
     </RelativeLayout>
 </android.support.v4.widget.NestedScrollView>

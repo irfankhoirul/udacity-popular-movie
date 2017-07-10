@@ -28,6 +28,8 @@ interface ListMovieContract {
 
         void setLoading(boolean status, @Nullable String message);
 
+        void setLoadMore(boolean status);
+
         void showError(String message);
     }
 
@@ -36,7 +38,9 @@ interface ListMovieContract {
 
         void setMovieList(ArrayList<Movie> movies);
 
-        void getMovies(String sort);
+        void getMovies(String sort, int page);
+
+        int getCurrentPage();
 
         String getSortPreference();
 

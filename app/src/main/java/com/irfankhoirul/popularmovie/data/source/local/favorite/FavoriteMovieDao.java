@@ -1,5 +1,6 @@
 package com.irfankhoirul.popularmovie.data.source.local.favorite;
 
+import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
@@ -15,6 +16,7 @@ import static com.irfankhoirul.popularmovie.data.source.local.favorite.FavoriteM
  * Created by Irfan Khoirul on 7/8/2017.
  */
 
+@Dao
 public interface FavoriteMovieDao {
 
     @Query("SELECT COUNT(*) FROM " + TABLE_NAME)

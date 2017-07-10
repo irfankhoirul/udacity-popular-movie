@@ -35,7 +35,7 @@
                     android:layout_height="match_parent"
                     android:contentDescription="@string/image_content_description_movie_poster"
                     android:scaleType="centerCrop"
-                    app:srcCompat="@drawable/image_placeholder" />
+                    app:srcCompat="@drawable/ic_movie_paceholder" />
 
                 <ImageView
                     android:id="@+id/iv_trailer_play_button"

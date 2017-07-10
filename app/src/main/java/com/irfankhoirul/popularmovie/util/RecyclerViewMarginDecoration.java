@@ -1,4 +1,4 @@
-package com.irfankhoirul.popularmovie.modules.movie_list;
+package com.irfankhoirul.popularmovie.util;
 
 import android.graphics.Rect;
 import android.support.annotation.IntRange;
@@ -21,11 +21,11 @@ import android.view.View;
  * limitations under the License.
  */
 
-class RecyclerViewMarginDecoration extends RecyclerView.ItemDecoration {
+public class RecyclerViewMarginDecoration extends RecyclerView.ItemDecoration {
     private final int columns;
     private int margin;
 
-    RecyclerViewMarginDecoration(@IntRange(from = 0) int margin, @IntRange(from = 0) int columns) {
+    public RecyclerViewMarginDecoration(@IntRange(from = 0) int margin, @IntRange(from = 0) int columns) {
         this.margin = margin;
         this.columns = columns;
     }

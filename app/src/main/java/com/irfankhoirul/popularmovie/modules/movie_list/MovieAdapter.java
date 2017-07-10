@@ -1,21 +1,18 @@
 package com.irfankhoirul.popularmovie.modules.movie_list;
 
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.graphics.Palette;
+import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.github.florent37.glidepalette.GlidePalette;
 import com.irfankhoirul.popularmovie.R;
 import com.irfankhoirul.popularmovie.data.pojo.Movie;
-import com.squareup.picasso.Picasso;
+import com.irfankhoirul.popularmovie.util.GlideApp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,8 +43,7 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
     private final MovieClickListener listener;
 
     private List<Movie> movies = new ArrayList<>();
-    private int defaultTitleTextColor;
-    private int defaultTitleBackgroundColor;
+    private Context context;
 
     MovieAdapter(List<Movie> movies, MovieClickListener listener) {
         this.listener = listener;
@@ -56,16 +52,11 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
 
     @Override
     public MovieAdapter.MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (defaultTitleBackgroundColor == 0) {
-            defaultTitleBackgroundColor = ContextCompat.getColor(
-                    parent.getContext(), R.color.colorPrimary);
-        }
-        if (defaultTitleTextColor == 0) {
-            defaultTitleTextColor = ContextCompat.getColor(
-                    parent.getContext(), android.R.color.white);
+        if (context == null) {
+            context = parent.getContext();
         }
 
-        View itemView = LayoutInflater.from(parent.getContext())
+        View itemView = LayoutInflater.from(context)
                 .inflate(R.layout.item_movie, parent, false);
 
         return new MovieViewHolder(itemView);
@@ -76,33 +67,16 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
         final Movie item = movies.get(position);
 
         holder.tvMovieTitle.setText(item.getTitle());
-        Picasso.with(holder.itemView.getContext())
+        GlideApp.with(context)
                 .load(POSTER_PATH_BASE_URL + item.getPosterPath())
-                .placeholder(R.drawable.image_placeholder)
-                .into(holder.ivMoviePoster, new com.squareup.picasso.Callback() {
-                    @Override
-                    public void onSuccess() {
-                        Palette.PaletteAsyncListener paletteListener = new Palette.PaletteAsyncListener() {
-                            public void onGenerated(Palette palette) {
-                                holder.tvMovieTitle.setBackgroundColor(
-                                        palette.getVibrantColor(defaultTitleBackgroundColor));
-                                holder.tvMovieTitle.setTextColor(
-                                        palette.getLightMutedColor(defaultTitleTextColor));
-                            }
-                        };
-
-                        Bitmap posterBitmap = ((BitmapDrawable) holder.ivMoviePoster.getDrawable())
-                                .getBitmap();
-                        if (posterBitmap != null && !posterBitmap.isRecycled()) {
-                            Palette.from(posterBitmap).generate(paletteListener);
-                        }
-                    }
-
-                    @Override
-                    public void onError() {
-                        Log.e(TAG, holder.itemView.getContext().getString(R.string.message_error));
-                    }
-                });
+                .placeholder(R.drawable.ic_movie_paceholder)
+                .listener(GlidePalette.with(POSTER_PATH_BASE_URL + item.getPosterPath())
+                        .use(GlidePalette.Profile.VIBRANT)
+                        .intoBackground(holder.tvMovieTitle, GlidePalette.Swatch.RGB)
+                        .intoTextColor(holder.tvMovieTitle, GlidePalette.Swatch.BODY_TEXT_COLOR)
+                        .crossfade(true)
+                )
+                .into(holder.ivMoviePoster);
     }
 
     @Override

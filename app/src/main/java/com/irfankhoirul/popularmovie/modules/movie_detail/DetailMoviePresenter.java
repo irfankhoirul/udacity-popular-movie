@@ -28,11 +28,14 @@ import java.util.ArrayList;
 
 class DetailMoviePresenter implements DetailMovieContract.Presenter {
 
+    public static final int INITIAL_PAGE = 1;
     private DetailMovieContract.View mView;
     private MovieDataSource movieDataSource;
     private Movie movie;
     private ArrayList<Review> reviews = new ArrayList<>();
     private ArrayList<Trailer> trailers = new ArrayList<>();
+    private int currentReviewPage = INITIAL_PAGE;
+    private int totalReviewPage;
 
     DetailMoviePresenter(DetailMovieContract.View mView) {
         this.mView = mView;
@@ -61,7 +64,7 @@ class DetailMoviePresenter implements DetailMovieContract.Presenter {
     }
 
     @Override
-    public void getTrailer(int id) {
+    public void getTrailer(long id) {
         mView.setTrailerLoading(true);
         movieDataSource.getTrailer(id, new RequestCallback<Trailer>() {
             @Override
@@ -112,14 +115,22 @@ class DetailMoviePresenter implements DetailMovieContract.Presenter {
     }
 
     @Override
-    public void getReviews(int id) {
+    public void getReviews(long id, int page) {
+        if (totalReviewPage != 0) {
+            if (page > totalReviewPage) {
+                return;
+            }
+        }
+        if (page == INITIAL_PAGE) {
+            reviews.clear();
+        }
         mView.setReviewLoading(true);
-        movieDataSource.getReviews(id, new RequestCallback<Review>() {
+        movieDataSource.getReviews(id, page, new RequestCallback<Review>() {
             @Override
             public void onSuccess(DataResult<Review> dataResult) {
                 if (dataResult != null) {
+                    totalReviewPage = dataResult.getTotalPages();
                     if (dataResult.getResults().size() > 0) {
-                        reviews.clear();
                         reviews.addAll(dataResult.getResults());
                         mView.updateReviewList();
                         mView.setReviewLoading(false);
@@ -137,5 +148,10 @@ class DetailMoviePresenter implements DetailMovieContract.Presenter {
                 mView.showNoReview();
             }
         });
+    }
+
+    @Override
+    public int getCurrentReviewPage() {
+        return currentReviewPage;
     }
 }

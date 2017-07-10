@@ -77,20 +77,20 @@ public class MovieDataSourceImpl implements MovieDataSource {
     }
 
     @Override
-    public void getMovies(String sort, RequestCallback callback) {
-        Call<DataResult<Movie>> call = endPoint.getMovies(sort);
+    public void getMovies(String sort, int page, RequestCallback callback) {
+        Call<DataResult<Movie>> call = endPoint.getMovies(sort, page);
         execute(call, callback);
     }
 
     @Override
-    public void getTrailer(int id, RequestCallback callback) {
+    public void getTrailer(long id, RequestCallback callback) {
         Call<DataResult<Trailer>> call = endPoint.getTrailer(id);
         execute(call, callback);
     }
 
     @Override
-    public void getReviews(int id, RequestCallback callback) {
-        Call<DataResult<Review>> call = endPoint.getReviews(id);
+    public void getReviews(long id, int page, RequestCallback callback) {
+        Call<DataResult<Review>> call = endPoint.getReviews(id, page);
         execute(call, callback);
     }
 

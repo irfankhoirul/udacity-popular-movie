@@ -30,7 +30,8 @@ import com.irfankhoirul.popularmovie.data.pojo.Review;
 import com.irfankhoirul.popularmovie.data.pojo.Trailer;
 import com.irfankhoirul.popularmovie.util.DateUtil;
 import com.irfankhoirul.popularmovie.util.DisplayMetricUtils;
-import com.squareup.picasso.Picasso;
+import com.irfankhoirul.popularmovie.util.GlideApp;
+import com.irfankhoirul.popularmovie.util.MultiPageRecyclerViewScrollListener;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import java.util.ArrayList;
@@ -87,8 +88,8 @@ public class DetailMovieActivity extends AppCompatActivity
     FrameLayout flTrailer;
     @BindView(R.id.ll_no_review)
     LinearLayout llNoReview;
-    @BindView(R.id.fl_review)
-    FrameLayout flReview;
+    @BindView(R.id.ll_review)
+    LinearLayout llReview;
     @BindView(rating_bar)
     RatingBar ratingBar;
     @BindView(R.id.tv_vote_count)
@@ -97,6 +98,7 @@ public class DetailMovieActivity extends AppCompatActivity
     private DetailMovieContract.Presenter presenter;
     private TrailerAdapter trailerAdapter;
     private ReviewAdapter reviewAdapter;
+    private MultiPageRecyclerViewScrollListener reviewsScrollListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,7 +142,7 @@ public class DetailMovieActivity extends AppCompatActivity
 
             presenter.getTrailer(presenter.getMovie().getId());
 
-            presenter.getReviews(presenter.getMovie().getId());
+            presenter.getReviews(presenter.getMovie().getId(), DetailMoviePresenter.INITIAL_PAGE);
 
             showMovieData();
         }
@@ -160,14 +162,14 @@ public class DetailMovieActivity extends AppCompatActivity
             }
         });
 
-        Picasso.with(this)
+        GlideApp.with(this)
                 .load(POSTER_PATH_BASE_URL + presenter.getMovie().getPosterPath())
-                .placeholder(R.drawable.image_placeholder)
+                .placeholder(R.drawable.ic_movie_paceholder)
                 .into(ivMoviePoster);
 
-        Picasso.with(this)
+        GlideApp.with(this)
                 .load(BACKDROP_PATH_BASE_URL + presenter.getMovie().getBackdropPath())
-                .placeholder(R.drawable.image_placeholder)
+                .placeholder(R.drawable.ic_movie_paceholder)
                 .into(ivMovieBackdrop);
 
         tvMovieTitle.setText(presenter.getMovie().getOriginalTitle());
@@ -218,6 +220,15 @@ public class DetailMovieActivity extends AppCompatActivity
                 });
         rvReviews.setAdapter(reviewAdapter);
         rvReviews.setNestedScrollingEnabled(false);
+
+        reviewsScrollListener = new MultiPageRecyclerViewScrollListener(new MultiPageRecyclerViewScrollListener.LoadNextListener() {
+            @Override
+            public void onStartLoadNext() {
+                presenter.getReviews(presenter.getMovie().getId(), presenter.getCurrentReviewPage() + 1);
+            }
+        });
+
+        rvReviews.addOnScrollListener(reviewsScrollListener);
     }
 
     private void setupBackdropImage() {

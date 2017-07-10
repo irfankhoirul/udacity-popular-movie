@@ -17,9 +17,9 @@ package com.irfankhoirul.popularmovie.data.source.remote;
  */
 
 public interface MovieDataSource {
-    void getMovies(String sort, RequestCallback callback);
+    void getMovies(String sort, int page, RequestCallback callback);
 
-    void getTrailer(int id, RequestCallback callback);
+    void getTrailer(long id, RequestCallback callback);
 
-    void getReviews(int id, RequestCallback callback);
+    void getReviews(long id, int page, RequestCallback callback);
 }

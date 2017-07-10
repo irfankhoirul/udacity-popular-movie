@@ -15,7 +15,7 @@
         android:background="@color/pure_black"
         android:contentDescription="@string/image_content_description_trailer_thumbnail"
         android:scaleType="centerCrop"
-        android:src="@drawable/image_placeholder" />
+        android:src="@drawable/ic_movie_paceholder" />
 
     <ImageView
         android:id="@+id/iv_trailer_play_button"

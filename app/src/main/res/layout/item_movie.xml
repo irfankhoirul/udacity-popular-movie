@@ -21,18 +21,19 @@
             android:layout_height="250dp"
             android:contentDescription="@string/image_content_description_movie_poster"
             android:scaleType="centerCrop"
-            android:src="@drawable/image_placeholder" />
+            android:src="@drawable/ic_movie_paceholder" />
 
         <TextView
             android:id="@+id/tv_movie_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
+            android:background="@color/colorPrimary"
             android:ellipsize="end"
             android:fontFamily="sans-serif-medium"
             android:maxLines="1"
             android:padding="16dp"
-            android:textColor="#dedede"
+            android:textColor="@color/pure_white"
             android:textSize="16sp" />
     </LinearLayout>
 

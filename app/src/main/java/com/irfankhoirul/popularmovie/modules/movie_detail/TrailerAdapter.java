@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import com.irfankhoirul.popularmovie.R;
 import com.irfankhoirul.popularmovie.data.pojo.Trailer;
 import com.irfankhoirul.popularmovie.util.DisplayMetricUtils;
-import com.squareup.picasso.Picasso;
+import com.irfankhoirul.popularmovie.util.GlideApp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,9 +57,9 @@ class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerViewHold
         String imageThumbnailUrl = "http://img.youtube.com/vi/"
                 .concat(trailer.getKey())
                 .concat("/hqdefault.jpg");
-        Picasso.with(holder.ivTrailerThumbnail.getContext())
+        GlideApp.with(holder.ivTrailerThumbnail.getContext())
                 .load(imageThumbnailUrl)
-                .placeholder(R.drawable.image_placeholder)
+                .placeholder(R.drawable.ic_movie_paceholder)
                 .into(holder.ivTrailerThumbnail);
 
         ViewGroup.LayoutParams ivTrailerThumbnailLayoutParams =

@@ -29,11 +29,14 @@ import java.util.ArrayList;
 
 class ListMoviePresenter implements ListMovieContract.Presenter {
 
+    public static final int INITIAL_PAGE = 1;
     private ListMovieContract.View mView;
     private MovieDataSource movieDataSource;
     private PreferenceDataSource preferenceDataSource;
     private ArrayList<Movie> movies = new ArrayList<>();
     private ListMovieActivity activity;
+    private int currentPage = INITIAL_PAGE;
+    private int totalPage;
 
     public ListMoviePresenter(ListMovieContract.View mView, ListMovieActivity activity) {
         movieDataSource = new MovieDataSourceImpl();
@@ -54,21 +57,32 @@ class ListMoviePresenter implements ListMovieContract.Presenter {
     }
 
     @Override
-    public void getMovies(final String sort) {
-        if (sort.equals(MovieDataSourceImpl.SORT_POPULAR)) {
-            mView.setLoading(true, activity.getString(R.string.message_loading_popular_movies));
-        } else if (sort.equals(MovieDataSourceImpl.SORT_TOP_RATED)) {
-            mView.setLoading(true, activity.getString(R.string.message_loading_top_rated_movies));
+    public void getMovies(final String sort, final int page) {
+        if (totalPage != 0) {
+            if (page > totalPage) {
+                return;
+            }
         }
-        movieDataSource.getMovies(sort, new RequestCallback<Movie>() {
+        if (page == INITIAL_PAGE) {
+            movies.clear();
+            if (sort.equals(MovieDataSourceImpl.SORT_POPULAR)) {
+                mView.setLoading(true, activity.getString(R.string.message_loading_popular_movies));
+            } else if (sort.equals(MovieDataSourceImpl.SORT_TOP_RATED)) {
+                mView.setLoading(true, activity.getString(R.string.message_loading_top_rated_movies));
+            }
+        } else {
+            mView.setLoadMore(true);
+        }
+        movieDataSource.getMovies(sort, page, new RequestCallback<Movie>() {
             @Override
             public void onSuccess(DataResult<Movie> dataResult) {
                 if (dataResult != null) {
+                    totalPage = dataResult.getTotalPages();
+                    hideLoading(page);
                     setSortPreference(sort);
-                    movies.clear();
+                    currentPage = dataResult.getPage();
                     movies.addAll(dataResult.getResults());
                     mView.updateMovieList();
-                    mView.setLoading(false, null);
                 } else {
                     onFailure();
                 }
@@ -76,10 +90,23 @@ class ListMoviePresenter implements ListMovieContract.Presenter {
 
             @Override
             public void onFailure() {
-                mView.setLoading(false, null);
+                hideLoading(page);
                 mView.showError(activity.getString(R.string.message_error_load_data));
             }
         });
+    }
+
+    private void hideLoading(int page) {
+        if (page == INITIAL_PAGE) {
+            mView.setLoading(false, null);
+        } else {
+            mView.setLoadMore(false);
+        }
+    }
+
+    @Override
+    public int getCurrentPage() {
+        return currentPage;
     }
 
     @Override

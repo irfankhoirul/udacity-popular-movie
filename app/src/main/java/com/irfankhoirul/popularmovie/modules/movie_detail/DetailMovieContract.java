@@ -44,13 +44,15 @@ interface DetailMovieContract {
 
         void setMovie(Movie movie);
 
-        void getReviews(int id);
+        void getReviews(long id, int page);
+
+        int getCurrentReviewPage();
 
         ArrayList<Review> getReviewList();
 
         void setReviewList(ArrayList<Review> reviews);
 
-        void getTrailer(int id);
+        void getTrailer(long id);
 
         ArrayList<Trailer> getTrailerList();
 
