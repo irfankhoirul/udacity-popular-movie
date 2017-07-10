@@ -10,14 +10,15 @@ import android.support.v7.widget.RecyclerView;
 public class MultiPageRecyclerViewScrollListener extends RecyclerView.OnScrollListener {
 
     private LoadNextListener listener;
-    private boolean loading;
+    private boolean loaded;
 
-    public MultiPageRecyclerViewScrollListener(LoadNextListener listener) {
+    public MultiPageRecyclerViewScrollListener(boolean loaded, LoadNextListener listener) {
+        this.loaded = loaded;
         this.listener = listener;
     }
 
     public void isLoading(boolean loading) {
-        this.loading = loading;
+        this.loaded = loading;
     }
 
     @Override
@@ -26,12 +27,10 @@ public class MultiPageRecyclerViewScrollListener extends RecyclerView.OnScrollLi
         RecyclerView.Adapter adapter = recyclerView.getAdapter();
         int totalItemCount = adapter.getItemCount();
         int lastVisibleItemPosition = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastVisibleItemPosition();
-//        Log.v("Last Visible Item Pos", String.valueOf(lastVisibleItemPosition));
-//        Log.v("Total Item Count", String.valueOf(totalItemCount));
 
         if ((lastVisibleItemPosition + 1) == totalItemCount) {
-            if (!loading) {
-                loading = true;
+            if (!loaded) {
+                loaded = true;
                 listener.onStartLoadNext();
             }
         }

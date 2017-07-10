@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".modules.movie_detail.DetailMovieActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:id="@+id/fl_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp">
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|bottom"
+                android:layout_margin="16dp"
+                android:src="@drawable/ic_favorite_border_black_24dp"
+                android:tint="@color/pure_white"
+                app:backgroundTint="@color/colorPrimary" />
+
+            <ImageView
+                android:id="@+id/iv_movie_backdrop"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/image_content_description_movie_poster"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/ic_movie_paceholder" />
+
+            <ImageView
+                android:id="@+id/iv_trailer_play_button"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:alpha="0.8"
+                android:contentDescription="@string/image_content_description_play_button"
+                android:src="@drawable/ic_play_circle_filled_black_24dp"
+                android:visibility="invisible" />
+
+            <com.wang.avi.AVLoadingIndicatorView
+                android:id="@+id/trailer_backdrop_loading_progress"
+                style="@style/AVLoadingIndicatorView.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="visible"
+                app:indicatorColor="@color/colorAccent"
+                app:indicatorName="BallPulseIndicator" />
+        </FrameLayout>
+
+        <include layout="@layout/detail_content" />
+
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>

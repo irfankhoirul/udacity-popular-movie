@@ -72,14 +72,13 @@ class DetailMoviePresenter implements DetailMovieContract.Presenter {
                 mView.setTrailerLoading(false);
                 if (dataResult != null) {
                     if (dataResult.getResults().size() > 0) {
-                        mView.setHasTrailer();
-
                         trailers.clear();
                         for (int i = 0; i < dataResult.getResults().size(); i++) {
                             if (dataResult.getResults().get(i).getSite().equals("YouTube")) {
                                 trailers.add(dataResult.getResults().get(i));
                             }
                         }
+                        mView.setHasTrailer(trailers.get(0), movie.getBackdropPath());
                         mView.updateTrailerList();
                         mView.setTrailerLoading(false);
                     } else {

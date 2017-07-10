@@ -20,6 +20,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.irfankhoirul.popularmovie.util.ConstantUtil.POSTER_PATH_BASE_URL;
+
 /*
  * Copyright 2017.  Irfan Khoirul Muhlishin
  *
@@ -39,7 +41,6 @@ import butterknife.ButterKnife;
 class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
 
     private final static String TAG = MovieAdapter.class.getSimpleName();
-    private final static String POSTER_PATH_BASE_URL = "https://image.tmdb.org/t/p/w185";
     private final MovieClickListener listener;
 
     private List<Movie> movies = new ArrayList<>();

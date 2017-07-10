@@ -24,7 +24,7 @@ import java.util.ArrayList;
 
 interface DetailMovieContract {
     interface View {
-        void setHasTrailer();
+        void setHasTrailer(Trailer trailer, String backdropUrl);
 
         void setTrailerLoading(boolean status);
 

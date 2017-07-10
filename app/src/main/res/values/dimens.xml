@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="standard_2">2dp</dimen>
+    <dimen name="standard_4">4dp</dimen>
+    <dimen name="standard_8">8dp</dimen>
+    <dimen name="standard_16">16dp</dimen>
+    <dimen name="standard_24">24dp</dimen>
+    <dimen name="standard_32">32dp</dimen>
+    <dimen name="standard_48">48dp</dimen>
+
+    <dimen name="marg_backdrop_left">0dp</dimen>
+    <dimen name="marg_backdrop_right">0dp</dimen>
+</resources>

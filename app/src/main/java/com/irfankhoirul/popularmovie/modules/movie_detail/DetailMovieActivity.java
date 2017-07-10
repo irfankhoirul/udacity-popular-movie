@@ -4,62 +4,33 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.ContextCompat;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.LinearSnapHelper;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SnapHelper;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RatingBar;
-import android.widget.TextView;
 
 import com.irfankhoirul.popularmovie.R;
 import com.irfankhoirul.popularmovie.data.pojo.Movie;
-import com.irfankhoirul.popularmovie.data.pojo.Review;
 import com.irfankhoirul.popularmovie.data.pojo.Trailer;
-import com.irfankhoirul.popularmovie.util.DateUtil;
 import com.irfankhoirul.popularmovie.util.DisplayMetricUtils;
 import com.irfankhoirul.popularmovie.util.GlideApp;
-import com.irfankhoirul.popularmovie.util.MultiPageRecyclerViewScrollListener;
 import com.wang.avi.AVLoadingIndicatorView;
-
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.irfankhoirul.popularmovie.R.id.rating_bar;
-import static com.irfankhoirul.popularmovie.R.id.tv_release_date;
+import static com.irfankhoirul.popularmovie.util.ConstantUtil.BACKDROP_PATH_BASE_URL;
 
-public class DetailMovieActivity extends AppCompatActivity
-        implements DetailMovieContract.View {
+public class DetailMovieActivity extends AppCompatActivity implements DetailMovieFragment.DetailMovieFragmentListener {
 
-    private static final String TAG = DetailMovieActivity.class.getSimpleName();
-    private static final String POSTER_PATH_BASE_URL = "https://image.tmdb.org/t/p/w185";
-    private static final String BACKDROP_PATH_BASE_URL = "https://image.tmdb.org/t/p/w500";
-
-    @BindView(R.id.iv_movie_poster)
-    ImageView ivMoviePoster;
-    @BindView(R.id.tv_movie_title)
-    TextView tvMovieTitle;
-    @BindView(R.id.tv_average_rating)
-    TextView tvAverageRating;
-    @BindView(tv_release_date)
-    TextView tvReleaseDate;
-    @BindView(R.id.tv_synopsis)
-    TextView tvSynopsis;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.toolbar_layout)
@@ -70,35 +41,21 @@ public class DetailMovieActivity extends AppCompatActivity
     ImageView ivMovieBackdrop;
     @BindView(R.id.fab)
     FloatingActionButton fab;
-    @BindView(R.id.iv_trailer_play_button)
-    ImageView ivTrailerPlayButton;
+    @BindView(R.id.fl_header)
+    FrameLayout flHeader;
     @BindView(R.id.trailer_backdrop_loading_progress)
     AVLoadingIndicatorView trailerBackdropLoadingProgress;
-    @BindView(R.id.review_loading_progress)
-    AVLoadingIndicatorView reviewLoadingProgress;
-    @BindView(R.id.rv_reviews)
-    RecyclerView rvReviews;
-    @BindView(R.id.rv_trailers)
-    RecyclerView rvTrailers;
-    @BindView(R.id.ll_no_trailer)
-    LinearLayout llNoTrailer;
-    @BindView(R.id.trailer_loading_progress)
-    AVLoadingIndicatorView trailerLoadingProgress;
-    @BindView(R.id.fl_trailer)
-    FrameLayout flTrailer;
-    @BindView(R.id.ll_no_review)
-    LinearLayout llNoReview;
-    @BindView(R.id.ll_review)
-    LinearLayout llReview;
-    @BindView(rating_bar)
-    RatingBar ratingBar;
-    @BindView(R.id.tv_vote_count)
-    TextView tvVoteCount;
+    @BindView(R.id.iv_trailer_play_button)
+    ImageView ivTrailerPlayButton;
 
-    private DetailMovieContract.Presenter presenter;
-    private TrailerAdapter trailerAdapter;
-    private ReviewAdapter reviewAdapter;
-    private MultiPageRecyclerViewScrollListener reviewsScrollListener;
+    private Trailer trailer;
+    private DetailMovieFragment fragment;
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        getSupportFragmentManager().putFragment(outState, "detailMovieFragment", fragment);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,53 +63,27 @@ public class DetailMovieActivity extends AppCompatActivity
         setContentView(R.layout.activity_detail);
         ButterKnife.bind(this);
 
-        presenter = new DetailMoviePresenter(this);
-
         setupToolbar();
+
+        setupFragment(savedInstanceState);
 
         setupBackdropImage();
 
-        setupTrailerRecyclerView();
-
-        setupReviewRecyclerView();
-
-        setupMovieData(savedInstanceState);
-
     }
 
-    private void setupMovieData(Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            if (savedInstanceState.getParcelable("movie") != null) {
-                presenter.setMovie((Movie) savedInstanceState.getParcelable("movie"));
-            }
-            if (savedInstanceState.getParcelableArrayList("trailers") != null) {
-                ArrayList<Trailer> trailers = savedInstanceState.getParcelableArrayList("trailers");
-                presenter.setTrailerList(trailers);
-                setTrailerLoading(false);
-                setHasTrailer();
-            }
-            if (savedInstanceState.getParcelableArrayList("reviews") != null) {
-                ArrayList<Review> reviews = savedInstanceState.getParcelableArrayList("reviews");
-                presenter.setReviewList(reviews);
-                setReviewLoading(false);
-            }
-            showMovieData();
-        } else if (getIntent() != null && getIntent().hasExtra("movie")) {
-            presenter.setMovie((Movie) getIntent().getParcelableExtra("movie"));
-
-            presenter.getTrailer(presenter.getMovie().getId());
-
-            presenter.getReviews(presenter.getMovie().getId(), DetailMoviePresenter.INITIAL_PAGE);
-
-            showMovieData();
+    private void setupFragment(Bundle savedInstanceState) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        if (savedInstanceState == null) {
+            fragment = DetailMovieFragment.newInstance((Movie) getIntent().getParcelableExtra("movie"), false);
+        } else {
+            fragment = (DetailMovieFragment) getSupportFragmentManager().getFragment(savedInstanceState, "detailMovieFragment");
         }
+        fragmentManager.beginTransaction()
+                .replace(R.id.item_detail_container, fragment)
+                .commit();
     }
 
-    private void showMovieData() {
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(presenter.getMovie().getTitle());
-        }
-
+    private void setupBackdropImage() {
         appBar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
@@ -162,76 +93,6 @@ public class DetailMovieActivity extends AppCompatActivity
             }
         });
 
-        GlideApp.with(this)
-                .load(POSTER_PATH_BASE_URL + presenter.getMovie().getPosterPath())
-                .placeholder(R.drawable.ic_movie_paceholder)
-                .into(ivMoviePoster);
-
-        GlideApp.with(this)
-                .load(BACKDROP_PATH_BASE_URL + presenter.getMovie().getBackdropPath())
-                .placeholder(R.drawable.ic_movie_paceholder)
-                .into(ivMovieBackdrop);
-
-        tvMovieTitle.setText(presenter.getMovie().getOriginalTitle());
-
-        String averageRating = String.valueOf(presenter.getMovie().getVoteAverage());
-        tvAverageRating.setText(averageRating);
-        ratingBar.setRating((float) presenter.getMovie().getVoteAverage() / 2.0f);
-        tvVoteCount.setText(String.valueOf(presenter.getMovie().getVoteCount()));
-        tvReleaseDate.setText(DateUtil.formatDate(presenter.getMovie().getReleaseDate(),
-                "yyyy-M-dd", "dd MMMM yyyy"));
-        tvSynopsis.setText(presenter.getMovie().getOverview());
-    }
-
-    private void setupTrailerRecyclerView() {
-        RecyclerView.LayoutManager layoutManager =
-                new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        rvTrailers.setLayoutManager(layoutManager);
-        trailerAdapter = new TrailerAdapter(presenter.getTrailerList(), new TrailerAdapter.TrailerClickListener() {
-            @Override
-            public void onTrailerItemClick(Trailer trailer) {
-                startActivity(new Intent(Intent.ACTION_VIEW,
-                        Uri.parse(presenter.getTrailerLink(trailer))));
-            }
-        });
-        rvTrailers.setAdapter(trailerAdapter);
-        rvTrailers.setNestedScrollingEnabled(false);
-
-        SnapHelper snapHelper = new LinearSnapHelper();
-        snapHelper.attachToRecyclerView(rvTrailers);
-    }
-
-    private void setupReviewRecyclerView() {
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        rvReviews.setLayoutManager(layoutManager);
-        reviewAdapter = new ReviewAdapter(presenter.getReviewList(),
-                new ReviewAdapter.ReviewClickListener() {
-                    @Override
-                    public void onReviewItemClick(Review review) {
-                        String url = review.getUrl();
-                        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
-                        builder.setToolbarColor(ContextCompat.getColor(DetailMovieActivity.this,
-                                R.color.colorPrimary));
-                        builder.setSecondaryToolbarColor(ContextCompat.getColor(DetailMovieActivity.this,
-                                R.color.colorPrimary));
-                        CustomTabsIntent customTabsIntent = builder.build();
-                        customTabsIntent.launchUrl(DetailMovieActivity.this, Uri.parse(url));
-                    }
-                });
-        rvReviews.setAdapter(reviewAdapter);
-        rvReviews.setNestedScrollingEnabled(false);
-
-        reviewsScrollListener = new MultiPageRecyclerViewScrollListener(new MultiPageRecyclerViewScrollListener.LoadNextListener() {
-            @Override
-            public void onStartLoadNext() {
-                presenter.getReviews(presenter.getMovie().getId(), presenter.getCurrentReviewPage() + 1);
-            }
-        });
-
-        rvReviews.addOnScrollListener(reviewsScrollListener);
-    }
-
-    private void setupBackdropImage() {
         ViewGroup.LayoutParams appBarLayoutParams = appBar.getLayoutParams();
         appBarLayoutParams.height = (int) ((9.0f / 16.0f) *
                 DisplayMetricUtils.getDeviceWidth(this));
@@ -249,14 +110,6 @@ public class DetailMovieActivity extends AppCompatActivity
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelable("movie", presenter.getMovie());
-        outState.putParcelableArrayList("trailers", presenter.getTrailerList());
-        outState.putParcelableArrayList("reviews", presenter.getReviewList());
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
@@ -267,58 +120,31 @@ public class DetailMovieActivity extends AppCompatActivity
     }
 
     @Override
-    public void setHasTrailer() {
+    public void onShowItem(String title) {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(title);
+        }
+    }
+
+    @Override
+    public void onTrailerLoaded(Trailer trailer, String backdropUrl) {
+        trailerBackdropLoadingProgress.setVisibility(View.GONE);
         ivTrailerPlayButton.setVisibility(View.VISIBLE);
+        this.trailer = trailer;
+
+        GlideApp.with(this)
+                .load(BACKDROP_PATH_BASE_URL + backdropUrl)
+                .placeholder(R.drawable.ic_movie_paceholder)
+                .into(ivMovieBackdrop);
+
+        flHeader.setClickable(true);
     }
 
-    @Override
-    public void setTrailerLoading(boolean status) {
-        if (status) {
-            trailerLoadingProgress.setVisibility(View.VISIBLE);
-            trailerBackdropLoadingProgress.setVisibility(View.VISIBLE);
-        } else {
-            trailerLoadingProgress.setVisibility(View.GONE);
-            trailerBackdropLoadingProgress.setVisibility(View.GONE);
-        }
-    }
-
-    @Override
-    public void setReviewLoading(boolean status) {
-        if (status) {
-            reviewLoadingProgress.setVisibility(View.VISIBLE);
-        } else {
-            reviewLoadingProgress.setVisibility(View.GONE);
-        }
-    }
-
-    @Override
-    public void updateReviewList() {
-        reviewAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void updateTrailerList() {
-        trailerAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void showNoReview() {
-        rvReviews.setVisibility(View.GONE);
-        llNoReview.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void showNoTrailer() {
-        rvTrailers.setVisibility(View.GONE);
-        llNoTrailer.setVisibility(View.VISIBLE);
-    }
-
-    @OnClick(R.id.iv_movie_backdrop)
-    public void setIvMovieBackdropClick() {
-        if (presenter.getTrailerList() != null && presenter.getTrailerList().size() > 0 &&
-                presenter.getTrailerLink(presenter.getTrailerList().get(0)) != null) {
+    @OnClick(R.id.fl_header)
+    public void setFlHeaderClick() {
+        if (trailer != null) {
             startActivity(new Intent(Intent.ACTION_VIEW,
-                    Uri.parse(presenter.getTrailerLink(presenter.getTrailerList().get(0)))));
+                    Uri.parse("http://www.youtube.com/watch?v=" + trailer.getKey())));
         }
     }
 }

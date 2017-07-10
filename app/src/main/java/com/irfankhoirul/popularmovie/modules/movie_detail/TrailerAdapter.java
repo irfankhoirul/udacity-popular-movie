@@ -1,5 +1,6 @@
 package com.irfankhoirul.popularmovie.modules.movie_detail;
 
+import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,15 +38,34 @@ class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerViewHold
 
     private List<Trailer> trailers = new ArrayList<>();
     private TrailerClickListener clickListener;
+    private Activity activity;
+    private int itemWidth;
+    private int itemHeight;
 
-    TrailerAdapter(List<Trailer> trailers, TrailerClickListener clickListener) {
+    TrailerAdapter(List<Trailer> trailers, Activity activity, boolean isTablet,
+                   TrailerClickListener clickListener) {
         this.trailers = trailers;
         this.clickListener = clickListener;
+        this.activity = activity;
+
+        setupItemSize(activity, isTablet);
+    }
+
+    private void setupItemSize(Activity activity, boolean isTablet) {
+        int width;
+        if (isTablet) {
+            width = (int) ((DisplayMetricUtils.getDeviceWidth(activity) * 2.0f / 3.0f) * (2.0f / 3.0f));
+        } else {
+            width = (int) (DisplayMetricUtils.getDeviceWidth(activity) * 2.0f / 3.0f);
+        }
+        int height = (int) ((9.0f / 16.0f) * width);
+        itemWidth = width;
+        itemHeight = height;
     }
 
     @Override
     public TrailerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext())
+        View itemView = LayoutInflater.from(activity)
                 .inflate(R.layout.item_trailer, parent, false);
 
         return new TrailerViewHolder(itemView);
@@ -54,9 +74,11 @@ class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerViewHold
     @Override
     public void onBindViewHolder(TrailerViewHolder holder, int position) {
         Trailer trailer = trailers.get(position);
+
         String imageThumbnailUrl = "http://img.youtube.com/vi/"
                 .concat(trailer.getKey())
                 .concat("/hqdefault.jpg");
+
         GlideApp.with(holder.ivTrailerThumbnail.getContext())
                 .load(imageThumbnailUrl)
                 .placeholder(R.drawable.ic_movie_paceholder)
@@ -64,8 +86,8 @@ class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerViewHold
 
         ViewGroup.LayoutParams ivTrailerThumbnailLayoutParams =
                 holder.ivTrailerThumbnail.getLayoutParams();
-        ivTrailerThumbnailLayoutParams.height = (int) ((9.0f / 16.0f) *
-                (DisplayMetricUtils.getDeviceWidth(holder.ivTrailerThumbnail.getContext()) / 2.0f));
+        ivTrailerThumbnailLayoutParams.width = itemWidth;
+        ivTrailerThumbnailLayoutParams.height = itemHeight;
         holder.ivTrailerThumbnail.setLayoutParams(ivTrailerThumbnailLayoutParams);
     }
 

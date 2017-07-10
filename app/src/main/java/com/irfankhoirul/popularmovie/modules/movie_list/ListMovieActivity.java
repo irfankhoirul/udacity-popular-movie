@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -19,8 +20,10 @@ import android.widget.TextView;
 
 import com.irfankhoirul.popularmovie.R;
 import com.irfankhoirul.popularmovie.data.pojo.Movie;
+import com.irfankhoirul.popularmovie.data.pojo.Trailer;
 import com.irfankhoirul.popularmovie.data.source.remote.MovieDataSourceImpl;
 import com.irfankhoirul.popularmovie.modules.movie_detail.DetailMovieActivity;
+import com.irfankhoirul.popularmovie.modules.movie_detail.DetailMovieFragment;
 import com.irfankhoirul.popularmovie.util.DisplayMetricUtils;
 import com.irfankhoirul.popularmovie.util.MultiPageRecyclerViewScrollListener;
 import com.irfankhoirul.popularmovie.util.RecyclerViewMarginDecoration;
@@ -32,7 +35,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class ListMovieActivity extends AppCompatActivity
-        implements ListMovieContract.View, MovieAdapter.MovieClickListener {
+        implements ListMovieContract.View, MovieAdapter.MovieClickListener,
+        DetailMovieFragment.DetailMovieFragmentListener {
 
     @BindView(R.id.ll_container)
     LinearLayout llContainer;
@@ -45,6 +49,7 @@ public class ListMovieActivity extends AppCompatActivity
     private MovieAdapter movieAdapter;
     private AlertDialog loadingDialog;
     private MultiPageRecyclerViewScrollListener moviesScrollListener;
+    private boolean isTablet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,17 +81,27 @@ public class ListMovieActivity extends AppCompatActivity
     }
 
     private void setupMovieRecyclerView() {
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 2);
-        rvMovies.setLayoutManager(layoutManager);
         int marginInPixel = DisplayMetricUtils.convertDpToPixel(8);
-        int column = 2;
+        int deviceWidthInDp = DisplayMetricUtils.convertPixelsToDp(
+                DisplayMetricUtils.getDeviceWidth(this));
+        isTablet = findViewById(R.id.item_detail_container) != null;
+        int column;
+        if (isTablet) {
+            column = (int) (1.0f / 3.0f * deviceWidthInDp) / 200;
+        } else {
+            column = deviceWidthInDp / 200;
+        }
         RecyclerViewMarginDecoration decoration =
-                new RecyclerViewMarginDecoration(marginInPixel, column);
+                new RecyclerViewMarginDecoration(RecyclerViewMarginDecoration.ORIENTATION_VERTICAL,
+                        marginInPixel, column);
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, column);
+        rvMovies.setLayoutManager(layoutManager);
         rvMovies.addItemDecoration(decoration);
         movieAdapter = new MovieAdapter(presenter.getMovieList(), this);
         rvMovies.setAdapter(movieAdapter);
 
-        moviesScrollListener = new MultiPageRecyclerViewScrollListener(new MultiPageRecyclerViewScrollListener.LoadNextListener() {
+        moviesScrollListener = new MultiPageRecyclerViewScrollListener(
+                presenter.getMovieList() != null, new MultiPageRecyclerViewScrollListener.LoadNextListener() {
             @Override
             public void onStartLoadNext() {
                 presenter.getMovies(presenter.getSortPreference(), presenter.getCurrentPage() + 1);
@@ -218,9 +233,17 @@ public class ListMovieActivity extends AppCompatActivity
 
     @Override
     public void onMovieItemClick(Movie movie) {
-        Intent intent = new Intent(this, DetailMovieActivity.class);
-        intent.putExtra("movie", movie);
-        startActivity(intent);
+        if (isTablet) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            DetailMovieFragment fragment = DetailMovieFragment.newInstance(movie, isTablet);
+            fragmentManager.beginTransaction()
+                    .replace(R.id.item_detail_container, fragment)
+                    .commit();
+        } else {
+            Intent intent = new Intent(this, DetailMovieActivity.class);
+            intent.putExtra("movie", movie);
+            startActivity(intent);
+        }
     }
 
     private void getMoviesByPreference() {
@@ -239,5 +262,17 @@ public class ListMovieActivity extends AppCompatActivity
         } else {
             presenter.getMovies(MovieDataSourceImpl.SORT_POPULAR, presenter.getCurrentPage());
         }
+    }
+
+    @Override
+    public void onShowItem(String title) {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(title);
+        }
+    }
+
+    @Override
+    public void onTrailerLoaded(Trailer trailer, String backdropUrl) {
+
     }
 }

@@ -22,24 +22,41 @@ import android.view.View;
  */
 
 public class RecyclerViewMarginDecoration extends RecyclerView.ItemDecoration {
+    public static final int ORIENTATION_VERTICAL = 1;
+    public static final int ORIENTATION_HORIZONTAL = 2;
     private final int columns;
     private int margin;
+    private int orientation;
 
-    public RecyclerViewMarginDecoration(@IntRange(from = 0) int margin, @IntRange(from = 0) int columns) {
+    public RecyclerViewMarginDecoration(int orientation,
+                                        @IntRange(from = 0) int margin,
+                                        @IntRange(from = 0) int columns) {
         this.margin = margin;
         this.columns = columns;
+        this.orientation = orientation;
     }
 
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
         int position = parent.getChildLayoutPosition(view);
-        outRect.right = margin;
-        outRect.bottom = margin;
-        if (position < columns) {
-            outRect.top = margin;
-        }
-        if (position % columns == 0) {
-            outRect.left = margin;
+        if (orientation == ORIENTATION_VERTICAL) {
+            outRect.right = margin;
+            outRect.bottom = margin;
+            if (position < columns) {
+                outRect.top = margin;
+            }
+            if (position % columns == 0) {
+                outRect.left = margin;
+            }
+        } else if (orientation == ORIENTATION_HORIZONTAL) {
+            outRect.bottom = margin;
+            outRect.right = margin;
+            if (position < columns) {
+                outRect.left = 0;
+            }
+            if (position % columns == 0) {
+                outRect.top = margin;
+            }
         }
     }
 }

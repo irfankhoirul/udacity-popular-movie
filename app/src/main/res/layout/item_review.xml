@@ -5,7 +5,9 @@
     android:layout_marginBottom="8dp"
     android:clickable="true"
     android:foreground="?android:selectableItemBackground"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp">
 
     <TextView
         android:id="@+id/tv_author"
@@ -18,5 +20,7 @@
         android:id="@+id/tv_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp" />
+        android:layout_marginTop="8dp"
+        android:ellipsize="end"
+        android:maxLines="10" />
 </LinearLayout>
