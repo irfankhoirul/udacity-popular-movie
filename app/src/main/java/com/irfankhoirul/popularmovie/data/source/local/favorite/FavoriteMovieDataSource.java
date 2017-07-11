@@ -1,53 +1,24 @@
 package com.irfankhoirul.popularmovie.data.source.local.favorite;
 
-import android.arch.persistence.room.Database;
-import android.arch.persistence.room.Room;
-import android.arch.persistence.room.RoomDatabase;
-import android.content.Context;
-import android.support.annotation.VisibleForTesting;
+import android.database.Cursor;
+import android.net.Uri;
 
 import com.irfankhoirul.popularmovie.data.pojo.Movie;
 
 /**
- * Created by Irfan Khoirul on 7/8/2017.
+ * Created by Irfan Khoirul on 7/10/2017.
  */
 
-@Database(entities = {Movie.class}, version = 1)
-public abstract class FavoriteMovieDataSource extends RoomDatabase {
+public interface FavoriteMovieDataSource {
+    // Query
+    void getById(long id, FavoriteDataObserver<Cursor> cursorFavoriteDataObserver);
 
-    /**
-     * The only instance
-     */
-    private static FavoriteMovieDataSource sInstance;
+    // Query All
+    void getAll(FavoriteDataObserver<Cursor> cursorFavoriteDataObserver);
 
-    /**
-     * Gets the singleton instance of SampleDatabase.
-     *
-     * @param context The context.
-     * @return The singleton instance of SampleDatabase.
-     */
-    public static synchronized FavoriteMovieDataSource getInstance(Context context) {
-        if (sInstance == null) {
-            sInstance = Room
-                    .databaseBuilder(context.getApplicationContext(), FavoriteMovieDataSource.class,
-                            "movie")
-                    .build();
-        }
-        return sInstance;
-    }
+    // Insert
+    void insert(Movie movie, FavoriteDataObserver<Uri> uriFavoriteDataObserver);
 
-    /**
-     * Switches the internal implementation with an empty in-memory database.
-     *
-     * @param context The context.
-     */
-    @VisibleForTesting
-    public static void switchToInMemory(Context context) {
-        sInstance = Room.inMemoryDatabaseBuilder(context.getApplicationContext(),
-                FavoriteMovieDataSource.class).build();
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    public abstract FavoriteMovieDao movie();
-
+    // Update
+    void delete(long id, FavoriteDataObserver<Integer> integerFavoriteDataObserver);
 }

@@ -37,6 +37,10 @@ interface DetailMovieContract {
         void showNoReview();
 
         void showNoTrailer();
+
+        void updateFavoriteStatus(boolean isFavorite);
+
+        void showError(String message);
     }
 
     interface Presenter {
@@ -60,5 +64,14 @@ interface DetailMovieContract {
 
         String getTrailerLink(Trailer trailer);
 
+        void addToFavorite(long date);
+
+        void removeFromFavorite();
+
+        void checkIsFavoriteMovie();
+
+        void setIsFavoriteMovie();
+
+        boolean isFavoriteMovie();
     }
 }

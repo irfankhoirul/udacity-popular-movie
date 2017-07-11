@@ -29,7 +29,8 @@ import butterknife.OnClick;
 
 import static com.irfankhoirul.popularmovie.util.ConstantUtil.BACKDROP_PATH_BASE_URL;
 
-public class DetailMovieActivity extends AppCompatActivity implements DetailMovieFragment.DetailMovieFragmentListener {
+public class DetailMovieActivity extends AppCompatActivity
+        implements DetailMovieFragment.MovieDetailFragmentListener {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -140,11 +141,28 @@ public class DetailMovieActivity extends AppCompatActivity implements DetailMovi
         flHeader.setClickable(true);
     }
 
+    @Override
+    public void onFavoriteChanged(boolean isFavorite) {
+        if (isFavorite) {
+            fab.setImageResource(R.drawable.ic_favorite_black_24dp);
+        } else {
+            fab.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+        }
+        fab.setVisibility(View.VISIBLE);
+    }
+
     @OnClick(R.id.fl_header)
     public void setFlHeaderClick() {
         if (trailer != null) {
             startActivity(new Intent(Intent.ACTION_VIEW,
                     Uri.parse("http://www.youtube.com/watch?v=" + trailer.getKey())));
+        }
+    }
+
+    @OnClick(R.id.fab)
+    public void setFabClick() {
+        if (fragment != null) {
+            fragment.setFabClick();
         }
     }
 }

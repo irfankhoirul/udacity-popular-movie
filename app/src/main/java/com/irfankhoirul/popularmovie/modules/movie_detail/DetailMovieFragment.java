@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
@@ -52,6 +53,8 @@ import static com.irfankhoirul.popularmovie.util.ConstantUtil.POSTER_PATH_BASE_U
 
 public class DetailMovieFragment extends Fragment implements DetailMovieContract.View {
 
+    @BindView(R.id.ll_container)
+    LinearLayout llContainer;
     @BindView(R.id.fl_header)
     FrameLayout flHeader;
     @BindView(R.id.iv_movie_poster)
@@ -98,7 +101,8 @@ public class DetailMovieFragment extends Fragment implements DetailMovieContract
     private ReviewAdapter reviewAdapter;
     private MultiPageRecyclerViewScrollListener reviewsScrollListener;
     private FragmentActivity activity;
-    private DetailMovieFragmentListener listener;
+    private MovieListFragmentListener movieListFragmentListener;
+    private MovieDetailFragmentListener movieDetailFragmentListener;
     private boolean isTablet;
 
     public static DetailMovieFragment newInstance(Movie movie, boolean isTablet) {
@@ -114,16 +118,21 @@ public class DetailMovieFragment extends Fragment implements DetailMovieContract
     public void onAttach(Context context) {
         super.onAttach(context);
         if (getArguments().getBoolean("isTablet")) {
-            listener = (ListMovieActivity) context;
+            movieListFragmentListener = (ListMovieActivity) context;
         } else {
-            listener = (DetailMovieActivity) context;
+            movieDetailFragmentListener = (DetailMovieActivity) context;
         }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        listener = null;
+        if (movieListFragmentListener != null) {
+            movieListFragmentListener = null;
+        }
+        if (movieDetailFragmentListener != null) {
+            movieDetailFragmentListener = null;
+        }
     }
 
     @Override
@@ -131,6 +140,7 @@ public class DetailMovieFragment extends Fragment implements DetailMovieContract
         outState.putParcelable("movie", presenter.getMovie());
         outState.putParcelableArrayList("trailers", presenter.getTrailerList());
         outState.putParcelableArrayList("reviews", presenter.getReviewList());
+        outState.putBoolean("isFavorite", presenter.isFavoriteMovie());
         super.onSaveInstanceState(outState);
     }
 
@@ -143,7 +153,7 @@ public class DetailMovieFragment extends Fragment implements DetailMovieContract
 
         activity = getActivity();
 
-        presenter = new DetailMoviePresenter(this);
+        presenter = new DetailMoviePresenter(this, activity);
 
         if (getArguments() != null) {
             isTablet = getArguments().getBoolean("isTablet");
@@ -173,6 +183,15 @@ public class DetailMovieFragment extends Fragment implements DetailMovieContract
         }
     }
 
+    @OnClick(R.id.fab)
+    public void setFabClick() {
+        if (!presenter.isFavoriteMovie()) {
+            presenter.addToFavorite(System.currentTimeMillis());
+        } else {
+            presenter.removeFromFavorite();
+        }
+    }
+
     private void setupMovieData(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             if (savedInstanceState.getParcelable("movie") != null) {
@@ -191,20 +210,36 @@ public class DetailMovieFragment extends Fragment implements DetailMovieContract
                 presenter.setReviewList(reviews);
                 setReviewLoading(false);
             }
-            showMovieData();
+            if (savedInstanceState.getBoolean("isFavorite")) {
+                presenter.setIsFavoriteMovie();
+                updateFavoriteStatus(true);
+            } else {
+                presenter.checkIsFavoriteMovie();
+            }
         } else if (getArguments() != null && getArguments().getParcelable("movie") != null) {
             presenter.setMovie((Movie) getArguments().getParcelable("movie"));
+
+            presenter.checkIsFavoriteMovie();
 
             presenter.getTrailer(presenter.getMovie().getId());
 
             presenter.getReviews(presenter.getMovie().getId(), DetailMoviePresenter.INITIAL_PAGE);
-
-            showMovieData();
         }
+
+        showMovieData();
     }
 
     private void showMovieData() {
-        listener.onShowItem(presenter.getMovie().getTitle());
+
+        if (isTablet) {
+            if (movieListFragmentListener != null) {
+                movieListFragmentListener.onShowItem(presenter.getMovie().getTitle());
+            }
+        } else {
+            if (movieDetailFragmentListener != null) {
+                movieDetailFragmentListener.onShowItem(presenter.getMovie().getTitle());
+            }
+        }
 
         setupPosterImage();
 
@@ -311,8 +346,10 @@ public class DetailMovieFragment extends Fragment implements DetailMovieContract
 
     @Override
     public void setHasTrailer(Trailer trailer, String backdropUrl) {
-        listener.onTrailerLoaded(trailer, backdropUrl);
-        ivTrailerPlayButton.setVisibility(View.VISIBLE);
+        if (movieDetailFragmentListener != null) {
+            movieDetailFragmentListener.onTrailerLoaded(trailer, backdropUrl);
+            ivTrailerPlayButton.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -357,9 +394,43 @@ public class DetailMovieFragment extends Fragment implements DetailMovieContract
         llNoTrailer.setVisibility(View.VISIBLE);
     }
 
-    public interface DetailMovieFragmentListener {
-        void onShowItem(String title);
+    @Override
+    public void updateFavoriteStatus(boolean isFavorite) {
+        if (isTablet) {
+            if (isFavorite) {
+                fab.setImageResource(R.drawable.ic_favorite_black_24dp);
+            } else {
+                fab.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+            }
+            fab.setVisibility(View.VISIBLE);
+        } else {
+            if (movieDetailFragmentListener != null) {
+                movieDetailFragmentListener.onFavoriteChanged(isFavorite);
+            }
+        }
+    }
 
+    @Override
+    public void showError(String message) {
+        Snackbar snackbar = Snackbar
+                .make(llContainer, message, Snackbar.LENGTH_LONG);
+
+        snackbar.setActionTextColor(ContextCompat.getColor(activity, R.color.red_700));
+
+        View sbView = snackbar.getView();
+        sbView.setBackgroundColor(ContextCompat.getColor(activity, R.color.red_100));
+        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setTextColor(ContextCompat.getColor(activity, R.color.red_700));
+        snackbar.show();
+    }
+
+    public interface MovieListFragmentListener {
+        void onShowItem(String title);
+    }
+
+    public interface MovieDetailFragmentListener extends MovieListFragmentListener {
         void onTrailerLoaded(Trailer trailer, String backdropUrl);
+
+        void onFavoriteChanged(boolean isFavorite);
     }
 }

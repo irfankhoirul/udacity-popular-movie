@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.OperationApplicationException;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -35,8 +36,16 @@ public class FavoriteMovieContentProvider extends ContentProvider {
         MATCHER.addURI(AUTHORITY, TABLE_NAME + "/#", CODE_MOVIE_ITEM);
     }
 
+    private FavoriteMovieDao favoriteMovieDao;
+    private Context context;
+
     @Override
     public boolean onCreate() {
+        context = getContext();
+        if (context == null) {
+            return false;
+        }
+        favoriteMovieDao = FavoriteMovieDatabase.getInstance(context).movie();
         return true;
     }
 
@@ -46,16 +55,11 @@ public class FavoriteMovieContentProvider extends ContentProvider {
                         @Nullable String[] selectionArgs, @Nullable String sortOrder) {
         final int code = MATCHER.match(uri);
         if (code == CODE_MOVIE_DIRECTORY || code == CODE_MOVIE_ITEM) {
-            final Context context = getContext();
-            if (context == null) {
-                return null;
-            }
-            FavoriteMovieDao movie = FavoriteMovieDataSource.getInstance(context).movie();
             final Cursor cursor;
             if (code == CODE_MOVIE_DIRECTORY) {
-                cursor = movie.selectAll();
+                cursor = favoriteMovieDao.selectAll();
             } else {
-                cursor = movie.selectById(ContentUris.parseId(uri));
+                cursor = favoriteMovieDao.selectById(ContentUris.parseId(uri));
             }
             cursor.setNotificationUri(context.getContentResolver(), uri);
             return cursor;
@@ -82,14 +86,13 @@ public class FavoriteMovieContentProvider extends ContentProvider {
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
         switch (MATCHER.match(uri)) {
             case CODE_MOVIE_DIRECTORY:
-                final Context context = getContext();
-                if (context == null) {
-                    return null;
-                }
-                final long id = FavoriteMovieDataSource.getInstance(context).movie()
-                        .insert(Movie.fromContentValues(values));
+                final long id = favoriteMovieDao.insert(Movie.fromContentValues(values));
                 context.getContentResolver().notifyChange(uri, null);
-                return ContentUris.withAppendedId(uri, id);
+                if (id > 0) {
+                    return ContentUris.withAppendedId(uri, id);
+                } else {
+                    throw new SQLiteException("Failed to insert row into URI: " + uri);
+                }
             case CODE_MOVIE_ITEM:
                 throw new IllegalArgumentException("Invalid URI, cannot insert with ID: " + uri);
             default:
@@ -104,12 +107,7 @@ public class FavoriteMovieContentProvider extends ContentProvider {
             case CODE_MOVIE_DIRECTORY:
                 throw new IllegalArgumentException("Invalid URI, cannot update without ID" + uri);
             case CODE_MOVIE_ITEM:
-                final Context context = getContext();
-                if (context == null) {
-                    return 0;
-                }
-                final int count = FavoriteMovieDataSource.getInstance(context).movie()
-                        .deleteById(ContentUris.parseId(uri));
+                final int count = favoriteMovieDao.deleteById(ContentUris.parseId(uri));
                 context.getContentResolver().notifyChange(uri, null);
                 return count;
             default:
@@ -124,14 +122,9 @@ public class FavoriteMovieContentProvider extends ContentProvider {
             case CODE_MOVIE_DIRECTORY:
                 throw new IllegalArgumentException("Invalid URI, cannot update without ID" + uri);
             case CODE_MOVIE_ITEM:
-                final Context context = getContext();
-                if (context == null) {
-                    return 0;
-                }
                 final Movie movie = Movie.fromContentValues(values);
                 movie.id = ContentUris.parseId(uri);
-                final int count = FavoriteMovieDataSource.getInstance(context).movie()
-                        .update(movie);
+                final int count = favoriteMovieDao.update(movie);
                 context.getContentResolver().notifyChange(uri, null);
                 return count;
             default:
@@ -148,7 +141,7 @@ public class FavoriteMovieContentProvider extends ContentProvider {
         if (context == null) {
             return new ContentProviderResult[0];
         }
-        final FavoriteMovieDataSource database = FavoriteMovieDataSource.getInstance(context);
+        final FavoriteMovieDatabase database = FavoriteMovieDatabase.getInstance(context);
         database.beginTransaction();
         try {
             final ContentProviderResult[] result = super.applyBatch(operations);
@@ -167,12 +160,11 @@ public class FavoriteMovieContentProvider extends ContentProvider {
                 if (context == null) {
                     return 0;
                 }
-                final FavoriteMovieDataSource database = FavoriteMovieDataSource.getInstance(context);
                 final Movie[] movies = new Movie[valuesArray.length];
                 for (int i = 0; i < valuesArray.length; i++) {
                     movies[i] = Movie.fromContentValues(valuesArray[i]);
                 }
-                return database.movie().insertAll(movies).length;
+                return favoriteMovieDao.insertAll(movies).length;
             case CODE_MOVIE_ITEM:
                 throw new IllegalArgumentException("Invalid URI, cannot insert with ID: " + uri);
             default:

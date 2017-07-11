@@ -11,7 +11,7 @@ public class FavoriteMovieContract {
 
     public static final class MovieEntry implements BaseColumns {
         public static final String TABLE_NAME = "movie";
-        public static final String COLUMN_ID = BaseColumns._ID;
+        public static final String COLUMN_ID = "id";
         public static final String COLUMN_VOTE_COUNT = "vote_count";
         public static final String COLUMN_VIDEO = "video";
         public static final String COLUMN_VOTE_AVERAGE = "vote_average";
@@ -24,6 +24,7 @@ public class FavoriteMovieContract {
         public static final String COLUMN_ADULT = "adult";
         public static final String COLUMN_OVERVIEW = "overview";
         public static final String COLUMN_RELEASE_DATE = "release_date";
+        public static final String COLUMN_DATE_ADDED = "date_added";
 
         public static final String AUTHORITY = "com.irfankhoirul.popularmovie";
 

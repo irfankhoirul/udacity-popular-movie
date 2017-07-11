@@ -7,9 +7,11 @@ import com.irfankhoirul.popularmovie.data.source.local.preference.PreferenceData
 import com.irfankhoirul.popularmovie.data.source.local.preference.PreferenceDataSourceImpl;
 import com.irfankhoirul.popularmovie.data.source.remote.MovieDataSource;
 import com.irfankhoirul.popularmovie.data.source.remote.MovieDataSourceImpl;
-import com.irfankhoirul.popularmovie.data.source.remote.RequestCallback;
+import com.irfankhoirul.popularmovie.data.source.remote.RemoteDataObserver;
 
 import java.util.ArrayList;
+
+import io.reactivex.annotations.NonNull;
 
 /*
  * Copyright 2017.  Irfan Khoirul Muhlishin
@@ -73,9 +75,9 @@ class ListMoviePresenter implements ListMovieContract.Presenter {
         } else {
             mView.setLoadMore(true);
         }
-        movieDataSource.getMovies(sort, page, new RequestCallback<Movie>() {
+        movieDataSource.getMovies(sort, page, new RemoteDataObserver<Movie>() {
             @Override
-            public void onSuccess(DataResult<Movie> dataResult) {
+            public void onNext(@NonNull DataResult<Movie> dataResult) {
                 if (dataResult != null) {
                     totalPage = dataResult.getTotalPages();
                     hideLoading(page);
@@ -84,12 +86,13 @@ class ListMoviePresenter implements ListMovieContract.Presenter {
                     movies.addAll(dataResult.getResults());
                     mView.updateMovieList();
                 } else {
-                    onFailure();
+                    onError(new NullPointerException("Data Result Is Null!"));
                 }
             }
 
             @Override
-            public void onFailure() {
+            public void onError(@NonNull Throwable e) {
+                super.onError(e);
                 hideLoading(page);
                 mView.showError(activity.getString(R.string.message_error_load_data));
             }

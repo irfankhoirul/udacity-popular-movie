@@ -14,6 +14,7 @@ import java.util.List;
 
 import static com.irfankhoirul.popularmovie.data.source.local.favorite.FavoriteMovieContract.MovieEntry.COLUMN_ADULT;
 import static com.irfankhoirul.popularmovie.data.source.local.favorite.FavoriteMovieContract.MovieEntry.COLUMN_BACKDROP_PATH;
+import static com.irfankhoirul.popularmovie.data.source.local.favorite.FavoriteMovieContract.MovieEntry.COLUMN_DATE_ADDED;
 import static com.irfankhoirul.popularmovie.data.source.local.favorite.FavoriteMovieContract.MovieEntry.COLUMN_ID;
 import static com.irfankhoirul.popularmovie.data.source.local.favorite.FavoriteMovieContract.MovieEntry.COLUMN_ORIGINAL_LANGUAGE;
 import static com.irfankhoirul.popularmovie.data.source.local.favorite.FavoriteMovieContract.MovieEntry.COLUMN_ORIGINAL_TITLE;
@@ -129,6 +130,9 @@ public class Movie implements Parcelable {
     @Expose
     private String releaseDate;
 
+    @ColumnInfo(name = COLUMN_DATE_ADDED)
+    private long dateAdded;
+
     public Movie() {
     }
 
@@ -146,6 +150,7 @@ public class Movie implements Parcelable {
         adult = in.readByte() != 0;
         overview = in.readString();
         releaseDate = in.readString();
+        dateAdded = in.readLong();
     }
 
     public static Movie fromContentValues(ContentValues values) {
@@ -189,6 +194,10 @@ public class Movie implements Parcelable {
         if (values.containsKey(COLUMN_RELEASE_DATE)) {
             movie.releaseDate = values.getAsString(COLUMN_RELEASE_DATE);
         }
+        if (values.containsKey(COLUMN_DATE_ADDED)) {
+            movie.dateAdded = values.getAsLong(COLUMN_DATE_ADDED);
+        }
+
         return movie;
     }
 
@@ -304,6 +313,14 @@ public class Movie implements Parcelable {
         this.releaseDate = releaseDate;
     }
 
+    public long getDateAdded() {
+        return dateAdded;
+    }
+
+    public void setDateAdded(long dateAdded) {
+        this.dateAdded = dateAdded;
+    }
+
     @Override
     public String toString() {
         return "Movie{" +
@@ -321,6 +338,7 @@ public class Movie implements Parcelable {
                 ", adult=" + adult +
                 ", overview='" + overview + '\'' +
                 ", releaseDate='" + releaseDate + '\'' +
+                ", dateAdded='" + dateAdded + '\'' +
                 '}';
     }
 
@@ -344,5 +362,6 @@ public class Movie implements Parcelable {
         dest.writeByte((byte) (adult ? 1 : 0));
         dest.writeString(overview);
         dest.writeString(releaseDate);
+        dest.writeLong(dateAdded);
     }
 }

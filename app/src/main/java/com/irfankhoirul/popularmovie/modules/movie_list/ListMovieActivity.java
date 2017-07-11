@@ -20,7 +20,6 @@ import android.widget.TextView;
 
 import com.irfankhoirul.popularmovie.R;
 import com.irfankhoirul.popularmovie.data.pojo.Movie;
-import com.irfankhoirul.popularmovie.data.pojo.Trailer;
 import com.irfankhoirul.popularmovie.data.source.remote.MovieDataSourceImpl;
 import com.irfankhoirul.popularmovie.modules.movie_detail.DetailMovieActivity;
 import com.irfankhoirul.popularmovie.modules.movie_detail.DetailMovieFragment;
@@ -36,7 +35,7 @@ import butterknife.ButterKnife;
 
 public class ListMovieActivity extends AppCompatActivity
         implements ListMovieContract.View, MovieAdapter.MovieClickListener,
-        DetailMovieFragment.DetailMovieFragmentListener {
+        DetailMovieFragment.MovieListFragmentListener {
 
     @BindView(R.id.ll_container)
     LinearLayout llContainer;
@@ -269,10 +268,5 @@ public class ListMovieActivity extends AppCompatActivity
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(title);
         }
-    }
-
-    @Override
-    public void onTrailerLoaded(Trailer trailer, String backdropUrl) {
-
     }
 }

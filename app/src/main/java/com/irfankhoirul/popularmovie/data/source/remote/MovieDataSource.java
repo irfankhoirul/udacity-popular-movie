@@ -16,10 +16,14 @@ package com.irfankhoirul.popularmovie.data.source.remote;
  * limitations under the License.
  */
 
+import com.irfankhoirul.popularmovie.data.pojo.Movie;
+import com.irfankhoirul.popularmovie.data.pojo.Review;
+import com.irfankhoirul.popularmovie.data.pojo.Trailer;
+
 public interface MovieDataSource {
-    void getMovies(String sort, int page, RequestCallback callback);
+    void getMovies(String sort, int page, RemoteDataObserver<Movie> movieRemoteDataObserver);
 
-    void getTrailer(long id, RequestCallback callback);
+    void getTrailer(long id, RemoteDataObserver<Trailer> trailerRemoteDataObserver);
 
-    void getReviews(long id, int page, RequestCallback callback);
+    void getReviews(long id, int page, RemoteDataObserver<Review> reviewRemoteDataObserver);
 }
