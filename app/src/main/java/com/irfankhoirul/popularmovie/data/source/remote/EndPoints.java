@@ -6,7 +6,7 @@ import com.irfankhoirul.popularmovie.data.pojo.Movie;
 import com.irfankhoirul.popularmovie.data.pojo.Review;
 import com.irfankhoirul.popularmovie.data.pojo.Trailer;
 
-import io.reactivex.Observable;
+import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -33,11 +33,11 @@ interface EndPoints {
     String REVIEW_END_POINT = "movie/{id}/reviews?api_key=" + BuildConfig.TMDB_API_KEY;
 
     @GET(MOVIE_END_POINT)
-    Observable<DataResult<Movie>> getMovies(@Path("sort") String sort, @Query("page") int page);
+    Call<DataResult<Movie>> getMovies(@Path("sort") String sort, @Query("page") int page);
 
     @GET(TRAILER_END_POINT)
-    Observable<DataResult<Trailer>> getTrailer(@Path("id") long id);
+    Call<DataResult<Trailer>> getTrailer(@Path("id") long id);
 
     @GET(REVIEW_END_POINT)
-    Observable<DataResult<Review>> getReviews(@Path("id") long id, @Query("page") int page);
+    Call<DataResult<Review>> getReviews(@Path("id") long id, @Query("page") int page);
 }

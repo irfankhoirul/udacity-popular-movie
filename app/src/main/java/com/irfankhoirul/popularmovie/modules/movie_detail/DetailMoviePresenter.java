@@ -1,24 +1,20 @@
 package com.irfankhoirul.popularmovie.modules.movie_detail;
 
 import android.content.Context;
-import android.database.Cursor;
-import android.net.Uri;
-import android.util.Log;
 
 import com.irfankhoirul.popularmovie.data.pojo.DataResult;
 import com.irfankhoirul.popularmovie.data.pojo.Movie;
 import com.irfankhoirul.popularmovie.data.pojo.Review;
 import com.irfankhoirul.popularmovie.data.pojo.Trailer;
-import com.irfankhoirul.popularmovie.data.source.local.favorite.FavoriteDataObserver;
 import com.irfankhoirul.popularmovie.data.source.local.favorite.FavoriteMovieDataSource;
 import com.irfankhoirul.popularmovie.data.source.local.favorite.FavoriteMovieDataSourceImpl;
 import com.irfankhoirul.popularmovie.data.source.remote.MovieDataSource;
 import com.irfankhoirul.popularmovie.data.source.remote.MovieDataSourceImpl;
-import com.irfankhoirul.popularmovie.data.source.remote.RemoteDataObserver;
+import com.irfankhoirul.popularmovie.data.source.remote.RequestCallback;
 
 import java.util.ArrayList;
 
-import io.reactivex.annotations.NonNull;
+import static io.reactivex.plugins.RxJavaPlugins.onError;
 
 /*
  * Copyright 2017.  Irfan Khoirul Muhlishin
@@ -79,9 +75,9 @@ class DetailMoviePresenter implements DetailMovieContract.Presenter {
     @Override
     public void getTrailer(long id) {
         mView.setTrailerLoading(true);
-        movieDataSource.getTrailer(id, new RemoteDataObserver<Trailer>() {
+        movieDataSource.getTrailer(id, new RequestCallback<DataResult<Trailer>>() {
             @Override
-            public void onNext(@NonNull DataResult<Trailer> dataResult) {
+            public void onSuccess(DataResult<Trailer> dataResult) {
                 mView.setTrailerLoading(false);
                 if (dataResult != null) {
                     if (dataResult.getResults().size() > 0) {
@@ -103,8 +99,7 @@ class DetailMoviePresenter implements DetailMovieContract.Presenter {
             }
 
             @Override
-            public void onError(@NonNull Throwable e) {
-                super.onError(e);
+            public void onFailure() {
                 mView.setTrailerLoading(false);
                 mView.showNoTrailer();
             }
@@ -129,60 +124,60 @@ class DetailMoviePresenter implements DetailMovieContract.Presenter {
 
     @Override
     public void addToFavorite(long date) {
-        movie.setDateAdded(date);
-        favoriteMovieDataSource.insert(movie, new FavoriteDataObserver<Uri>() {
-            @Override
-            public void onNext(@NonNull Uri o) {
-                mView.updateFavoriteStatus(true);
-            }
-
-            @Override
-            public void onError(@NonNull Throwable e) {
-                super.onError(e);
-                mView.showError("Failed to add to Favorite");
-            }
-        });
+//        movie.setDateAdded(date);
+//        favoriteMovieDataSource.insert(movie, new FavoriteDataObserver<Uri>() {
+//            @Override
+//            public void onNext(@NonNull Uri o) {
+//                mView.updateFavoriteStatus(true);
+//            }
+//
+//            @Override
+//            public void onError(@NonNull Throwable e) {
+//                super.onError(e);
+//                mView.showError("Failed to add to Favorite");
+//            }
+//        });
     }
 
     @Override
     public void removeFromFavorite() {
-        favoriteMovieDataSource.delete(movie.getId(), new FavoriteDataObserver<Integer>() {
-            @Override
-            public void onNext(@NonNull Integer o) {
-                mView.updateFavoriteStatus(false);
-            }
-
-            @Override
-            public void onError(@NonNull Throwable e) {
-                super.onError(e);
-                mView.showError("Failed to remove from Favorite");
-            }
-        });
+//        favoriteMovieDataSource.delete(movie.getId(), new FavoriteDataObserver<Integer>() {
+//            @Override
+//            public void onNext(@NonNull Integer o) {
+//                mView.updateFavoriteStatus(false);
+//            }
+//
+//            @Override
+//            public void onError(@NonNull Throwable e) {
+//                super.onError(e);
+//                mView.showError("Failed to remove from Favorite");
+//            }
+//        });
     }
 
     @Override
     public void checkIsFavoriteMovie() {
-        favoriteMovieDataSource.getById(movie.getId(), new FavoriteDataObserver<Cursor>() {
-            @Override
-            public void onNext(@NonNull Cursor o) {
-                if (o.getCount() > 0) {
-                    o.moveToFirst();
-                    isFavoriteMovie = true;
-                    mView.updateFavoriteStatus(true);
-                } else {
-                    isFavoriteMovie = false;
-                    mView.updateFavoriteStatus(false);
-                }
-                o.close();
-            }
-
-            @Override
-            public void onError(@NonNull Throwable e) {
-                super.onError(e);
-                mView.updateFavoriteStatus(false);
-                Log.v("IsFavorite", "Error");
-            }
-        });
+//        favoriteMovieDataSource.getById(movie.getId(), new FavoriteDataObserver<Cursor>() {
+//            @Override
+//            public void onNext(@NonNull Cursor o) {
+//                if (o.getCount() > 0) {
+//                    o.moveToFirst();
+//                    isFavoriteMovie = true;
+//                    mView.updateFavoriteStatus(true);
+//                } else {
+//                    isFavoriteMovie = false;
+//                    mView.updateFavoriteStatus(false);
+//                }
+//                o.close();
+//            }
+//
+//            @Override
+//            public void onError(@NonNull Throwable e) {
+//                super.onError(e);
+//                mView.updateFavoriteStatus(false);
+//                Log.v("IsFavorite", "Error");
+//            }
+//        });
     }
 
     @Override
@@ -206,9 +201,9 @@ class DetailMoviePresenter implements DetailMovieContract.Presenter {
             reviews.clear();
         }
         mView.setReviewLoading(true);
-        movieDataSource.getReviews(id, page, new RemoteDataObserver<Review>() {
+        movieDataSource.getReviews(id, page, new RequestCallback<DataResult<Review>>() {
             @Override
-            public void onNext(@NonNull DataResult<Review> dataResult) {
+            public void onSuccess(DataResult<Review> dataResult) {
                 if (dataResult != null) {
                     totalReviewPage = dataResult.getTotalPages();
                     if (dataResult.getResults().size() > 0) {
@@ -224,8 +219,7 @@ class DetailMoviePresenter implements DetailMovieContract.Presenter {
             }
 
             @Override
-            public void onError(@NonNull Throwable e) {
-                super.onError(e);
+            public void onFailure() {
                 mView.setReviewLoading(false);
                 mView.showNoReview();
             }

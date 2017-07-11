@@ -16,15 +16,8 @@ package com.irfankhoirul.popularmovie.data.source.remote;
  * limitations under the License.
  */
 
-import com.irfankhoirul.popularmovie.data.pojo.DataResult;
-import com.irfankhoirul.popularmovie.data.pojo.Movie;
-import com.irfankhoirul.popularmovie.data.pojo.Review;
-import com.irfankhoirul.popularmovie.data.pojo.Trailer;
+public interface RequestCallback<T> {
+    void onSuccess(T dataResult);
 
-public interface MovieDataSource {
-    void getMovies(String sort, int page, RequestCallback<DataResult<Movie>> requestCallback);
-
-    void getTrailer(long id, RequestCallback<DataResult<Trailer>> requestCallback);
-
-    void getReviews(long id, int page, RequestCallback<DataResult<Review>> requestCallback);
+    void onFailure();
 }

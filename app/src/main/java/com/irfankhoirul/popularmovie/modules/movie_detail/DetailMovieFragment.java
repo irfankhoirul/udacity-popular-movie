@@ -115,6 +115,12 @@ public class DetailMovieFragment extends Fragment implements DetailMovieContract
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (getArguments().getBoolean("isTablet")) {

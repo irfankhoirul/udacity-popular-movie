@@ -40,6 +40,8 @@ interface ListMovieContract {
 
         void getMovies(String sort, int page);
 
+        void getFavoriteMovies();
+
         int getCurrentPage();
 
         String getSortPreference();

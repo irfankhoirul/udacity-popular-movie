@@ -1,18 +1,21 @@
 package com.irfankhoirul.popularmovie.data.source.remote;
 
+import android.support.annotation.NonNull;
+import android.util.Log;
+
+import com.irfankhoirul.popularmovie.data.pojo.DataResult;
 import com.irfankhoirul.popularmovie.data.pojo.Movie;
 import com.irfankhoirul.popularmovie.data.pojo.Review;
 import com.irfankhoirul.popularmovie.data.pojo.Trailer;
 
 import java.util.concurrent.TimeUnit;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.schedulers.Schedulers;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /*
@@ -37,7 +40,6 @@ public class MovieDataSourceImpl implements MovieDataSource {
 
     private static final String TAG = MovieDataSourceImpl.class.getSimpleName();
     private EndPoints endPoint;
-    private CompositeDisposable mCompositeDisposable;
 
     public MovieDataSourceImpl() {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
@@ -51,7 +53,6 @@ public class MovieDataSourceImpl implements MovieDataSource {
         String BASE_URL = "https://api.themoviedb.org/3/";
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(httpClient.build())
                 .build();
@@ -59,28 +60,38 @@ public class MovieDataSourceImpl implements MovieDataSource {
         endPoint = retrofit.create(EndPoints.class);
     }
 
-    @Override
-    public void getMovies(String sort, int page, RemoteDataObserver<Movie> movieRemoteDataObserver) {
-        endPoint.getMovies(sort, page)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(movieRemoteDataObserver);
+    @SuppressWarnings("unchecked")
+    private <T> void execute(Call<DataResult<T>> call, final RequestCallback callback) {
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) {
+                callback.onSuccess((DataResult<T>) response.body());
+            }
+
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull Throwable t) {
+                Log.e(TAG, t.getMessage());
+                callback.onFailure();
+            }
+        });
     }
 
     @Override
-    public void getTrailer(long id, RemoteDataObserver<Trailer> trailerRemoteDataObserver) {
-        endPoint.getTrailer(id)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(trailerRemoteDataObserver);
+    public void getMovies(String sort, int page, RequestCallback callback) {
+        Call<DataResult<Movie>> call = endPoint.getMovies(sort, page);
+        execute(call, callback);
     }
 
     @Override
-    public void getReviews(long id, int page, RemoteDataObserver<Review> reviewRemoteDataObserver) {
-        endPoint.getReviews(id, page)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(reviewRemoteDataObserver);
+    public void getTrailer(long id, RequestCallback callback) {
+        Call<DataResult<Trailer>> call = endPoint.getTrailer(id);
+        execute(call, callback);
+    }
+
+    @Override
+    public void getReviews(long id, int page, RequestCallback callback) {
+        Call<DataResult<Review>> call = endPoint.getReviews(id, page);
+        execute(call, callback);
     }
 
 }

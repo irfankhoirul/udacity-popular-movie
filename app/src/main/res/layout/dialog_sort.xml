@@ -18,5 +18,12 @@
         android:id="@+id/rb_sort_by_rating"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:text="@string/sort_top_rated" />
+
+    <RadioButton
+        android:id="@+id/rb_show_favorite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/show_favorite" />
 </RadioGroup>
