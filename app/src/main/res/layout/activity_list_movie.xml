@@ -8,11 +8,19 @@
     android:orientation="vertical"
     tools:context=".modules.movie_list.ListMovieActivity">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_movies"
+    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:visibility="visible">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_movies"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <com.wang.avi.AVLoadingIndicatorView
         android:id="@+id/avi_load_more"
@@ -24,5 +32,33 @@
         app:indicatorColor="@color/colorAccent"
         app:indicatorName="BallPulseIndicator" />
 
+    <LinearLayout
+        android:id="@+id/ll_no_favorite_movie"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_movie_favorite" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            android:text="@string/label_no_favorite_movie_added_yet" />
+
+        <Button
+            android:id="@+id/bt_pick_favorite_movie"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:text="@string/label_pick_favorite_movie" />
+
+    </LinearLayout>
 
 </LinearLayout>

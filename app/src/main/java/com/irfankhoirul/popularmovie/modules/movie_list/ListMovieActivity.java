@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -14,6 +15,8 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -31,6 +34,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import static com.irfankhoirul.popularmovie.util.ConstantUtil.SHOW_DETAIL_CHANGED_RESULT_CODE;
 import static com.irfankhoirul.popularmovie.util.ConstantUtil.SHOW_DETAIL_REQ_CODE;
@@ -48,6 +52,14 @@ public class ListMovieActivity extends AppCompatActivity
     RecyclerView rvMovies;
     @BindView(R.id.avi_load_more)
     AVLoadingIndicatorView aviLoadMore;
+    @BindView(R.id.swipe_refresh_layout)
+    SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.ll_no_favorite_movie)
+    LinearLayout llNoFavoriteMovie;
+    @BindView(R.id.bt_pick_favorite_movie)
+    Button btPickFavoriteMovie;
+    LinearLayout llNoSelectedMovie;
+    FrameLayout itemDetailContainer;
 
     private ListMovieContract.Presenter presenter;
     private MovieAdapter movieAdapter;
@@ -66,6 +78,14 @@ public class ListMovieActivity extends AppCompatActivity
             sortDialog.dismiss();
         }
         super.onDestroy();
+    }
+
+    @OnClick(R.id.bt_pick_favorite_movie)
+    public void setBtPickFavoriteMovie() {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(R.string.title_popular_movies);
+        }
+        presenter.getMovies(SORT_POPULAR, ListMoviePresenter.INITIAL_PAGE);
     }
 
     @Override
@@ -122,7 +142,9 @@ public class ListMovieActivity extends AppCompatActivity
         int marginInPixel = DisplayMetricUtils.convertDpToPixel(8);
         int deviceWidthInDp = DisplayMetricUtils.convertPixelsToDp(
                 DisplayMetricUtils.getDeviceWidth(this));
-        isTablet = findViewById(R.id.item_detail_container) != null;
+        itemDetailContainer = (FrameLayout) findViewById(R.id.item_detail_container);
+        llNoSelectedMovie = (LinearLayout) findViewById(R.id.ll_no_selected_movie);
+        isTablet = itemDetailContainer != null;
         int column;
         if (isTablet) {
             column = (int) (1.0f / 3.0f * deviceWidthInDp) / 200;
@@ -145,6 +167,17 @@ public class ListMovieActivity extends AppCompatActivity
                 if (presenter.getSortPreference().equals(SORT_POPULAR) ||
                         presenter.getSortPreference().equals(SORT_TOP_RATED)) {
                     presenter.getMovies(presenter.getSortPreference(), presenter.getCurrentPage() + 1);
+                }
+            }
+        });
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (presenter.getSortPreference().equals(SORT_FAVORITE)) {
+                    presenter.getFavoriteMovies();
+                } else {
+                    presenter.getMovies(presenter.getSortPreference(), ListMoviePresenter.INITIAL_PAGE);
                 }
             }
         });
@@ -189,6 +222,15 @@ public class ListMovieActivity extends AppCompatActivity
     public void updateMovieList() {
         movieAdapter.notifyDataSetChanged();
         moviesScrollListener.isLoading(false);
+        if (presenter.getMovieList().size() > 0) {
+            llNoFavoriteMovie.setVisibility(View.GONE);
+            swipeRefreshLayout.setVisibility(View.VISIBLE);
+        } else {
+            if (presenter.getSortPreference().equals(SORT_FAVORITE)) {
+                swipeRefreshLayout.setVisibility(View.GONE);
+                llNoFavoriteMovie.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     private void showSortDialog() {
@@ -254,6 +296,9 @@ public class ListMovieActivity extends AppCompatActivity
 
     @Override
     public void setLoading(boolean isLoading, String message) {
+        if (swipeRefreshLayout.isRefreshing()) {
+            swipeRefreshLayout.setRefreshing(false);
+        }
         if (isLoading) {
             AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
             LayoutInflater inflater = this.getLayoutInflater();
@@ -301,6 +346,8 @@ public class ListMovieActivity extends AppCompatActivity
     @Override
     public void onMovieItemClick(Movie movie) {
         if (isTablet) {
+            llNoSelectedMovie.setVisibility(View.GONE);
+            itemDetailContainer.setVisibility(View.VISIBLE);
             FragmentManager fragmentManager = getSupportFragmentManager();
             DetailMovieFragment fragment = DetailMovieFragment.newInstance(movie, isTablet);
             fragmentManager.beginTransaction()

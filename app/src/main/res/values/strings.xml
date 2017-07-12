@@ -27,4 +27,7 @@
     <string name="image_content_description_trailer_thumbnail">Trailer Thumbnail</string>
     <string name="label_no_trailer_found">No Trailer Found</string>
     <string name="label_no_review_found">No Review Found</string>
+    <string name="label_no_favorite_movie_added_yet">No favorite movie added yet</string>
+    <string name="label_pick_favorite_movie">Pick favorite movie</string>
+    <string name="label_no_movie_selected">No movie selected</string>
 </resources>
