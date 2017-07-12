@@ -1,5 +1,8 @@
 package com.irfankhoirul.popularmovie.data.source.local.favorite;
 
+import android.database.Cursor;
+import android.net.Uri;
+
 import com.irfankhoirul.popularmovie.data.pojo.Movie;
 
 /**
@@ -8,14 +11,14 @@ import com.irfankhoirul.popularmovie.data.pojo.Movie;
 
 public interface FavoriteMovieDataSource {
     // Query
-    void getById(long id);
+    void getById(long id, FavoriteDataObserver<Cursor> cursorFavoriteDataObserver);
 
     // Query All
-    void getAll();
+    void getAll(FavoriteDataObserver<Cursor> cursorFavoriteDataObserver);
 
     // Insert
-    void insert(Movie movie);
+    void insert(Movie movie, FavoriteDataObserver<Uri> uriFavoriteDataObserver);
 
     // Update
-    void delete(long id);
+    void delete(long id, FavoriteDataObserver<Integer> integerFavoriteDataObserver);
 }
