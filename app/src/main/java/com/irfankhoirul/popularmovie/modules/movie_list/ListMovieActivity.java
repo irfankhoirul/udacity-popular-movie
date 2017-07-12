@@ -32,6 +32,8 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.irfankhoirul.popularmovie.util.ConstantUtil.SHOW_DETAIL_CHANGED_RESULT_CODE;
+import static com.irfankhoirul.popularmovie.util.ConstantUtil.SHOW_DETAIL_REQ_CODE;
 import static com.irfankhoirul.popularmovie.util.ConstantUtil.SORT_FAVORITE;
 import static com.irfankhoirul.popularmovie.util.ConstantUtil.SORT_POPULAR;
 import static com.irfankhoirul.popularmovie.util.ConstantUtil.SORT_TOP_RATED;
@@ -50,8 +52,21 @@ public class ListMovieActivity extends AppCompatActivity
     private ListMovieContract.Presenter presenter;
     private MovieAdapter movieAdapter;
     private AlertDialog loadingDialog;
+    private AlertDialog sortDialog;
     private MultiPageRecyclerViewScrollListener moviesScrollListener;
     private boolean isTablet;
+    private String currentState;
+
+    @Override
+    protected void onDestroy() {
+        if (loadingDialog != null) {
+            loadingDialog.dismiss();
+        }
+        if (sortDialog != null) {
+            sortDialog.dismiss();
+        }
+        super.onDestroy();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +91,27 @@ public class ListMovieActivity extends AppCompatActivity
             if (savedInstanceState.getParcelableArrayList("movies") != null) {
                 ArrayList<Movie> movies = savedInstanceState.getParcelableArrayList("movies");
                 presenter.setMovieList(movies);
+            }
+
+            if (savedInstanceState.getInt("page") != 0) {
+                presenter.setCurrentPage(savedInstanceState.getInt("page"));
+            }
+
+            String viewState = savedInstanceState.getString("viewState");
+            if (viewState != null) {
+                currentState = viewState;
+                switch (viewState) {
+                    case ListMovieViewState.STATE_SHOW_SORT_DIALOG:
+                        showSortDialog();
+                        break;
+                    case ListMovieViewState.STATE_LOADING_MOVIE:
+                        presenter.getMovies(presenter.getSortPreference(),
+                                ListMoviePresenter.INITIAL_PAGE);
+                        break;
+                    case ListMovieViewState.STATE_LOADING_FAVORITE:
+                        presenter.getFavoriteMovies();
+                        break;
+                }
             }
         } else {
             getMoviesByPreference();
@@ -122,6 +158,8 @@ public class ListMovieActivity extends AppCompatActivity
         if (getSupportActionBar() != null && getSupportActionBar().getTitle() != null) {
             outState.putString("toolbar_title", getSupportActionBar().getTitle().toString());
         }
+        outState.putInt("page", presenter.getCurrentPage());
+        outState.putString("viewState", currentState);
         super.onSaveInstanceState(outState);
     }
 
@@ -143,12 +181,19 @@ public class ListMovieActivity extends AppCompatActivity
     }
 
     @Override
+    public void setCurrentState(String state) {
+        currentState = state;
+    }
+
+    @Override
     public void updateMovieList() {
         movieAdapter.notifyDataSetChanged();
         moviesScrollListener.isLoading(false);
     }
 
     private void showSortDialog() {
+        setCurrentState(ListMovieViewState.STATE_SHOW_SORT_DIALOG);
+
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_sort, null);
@@ -168,19 +213,26 @@ public class ListMovieActivity extends AppCompatActivity
         dialogBuilder.setPositiveButton(R.string.action_ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if (rbSortByPopularity.isChecked()) {
+                setCurrentState(ListMovieViewState.STATE_IDLE);
+                if (rbSortByPopularity.isChecked() &&
+                        (!presenter.getSortPreference().equals(SORT_POPULAR) ||
+                                presenter.getMovieList().isEmpty())) {
                     if (getSupportActionBar() != null) {
                         getSupportActionBar().setTitle(R.string.title_popular_movies);
                     }
                     presenter.getMovies(SORT_POPULAR,
                             ListMoviePresenter.INITIAL_PAGE);
-                } else if (rbSortByRating.isChecked()) {
+                } else if (rbSortByRating.isChecked() &&
+                        (!presenter.getSortPreference().equals(SORT_TOP_RATED) ||
+                                presenter.getMovieList().isEmpty())) {
                     if (getSupportActionBar() != null) {
                         getSupportActionBar().setTitle(R.string.title_top_rated_movies);
                     }
                     presenter.getMovies(SORT_TOP_RATED,
                             ListMoviePresenter.INITIAL_PAGE);
-                } else if (rbShowFavorite.isChecked()) {
+                } else if (rbShowFavorite.isChecked() &&
+                        (!presenter.getSortPreference().equals(SORT_FAVORITE) ||
+                                presenter.getMovieList().isEmpty())) {
                     if (getSupportActionBar() != null) {
                         getSupportActionBar().setTitle(R.string.title_favorite_movies);
                     }
@@ -191,11 +243,13 @@ public class ListMovieActivity extends AppCompatActivity
         dialogBuilder.setNegativeButton(R.string.action_cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                setCurrentState(ListMovieViewState.STATE_IDLE);
                 dialog.dismiss();
             }
         });
-        AlertDialog alertDialog = dialogBuilder.create();
-        alertDialog.show();
+        sortDialog = dialogBuilder.create();
+        sortDialog.setCancelable(false);
+        sortDialog.show();
     }
 
     @Override
@@ -255,7 +309,7 @@ public class ListMovieActivity extends AppCompatActivity
         } else {
             Intent intent = new Intent(this, DetailMovieActivity.class);
             intent.putExtra("movie", movie);
-            startActivity(intent);
+            startActivityForResult(intent, SHOW_DETAIL_REQ_CODE);
         }
     }
 
@@ -286,6 +340,30 @@ public class ListMovieActivity extends AppCompatActivity
     public void onShowItem(String title) {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(title);
+        }
+    }
+
+    @Override
+    public void onRemoveItem(Movie movie) {
+        if (presenter.getSortPreference().equals(SORT_FAVORITE)) {
+            presenter.removeMovie(movie);
+        }
+    }
+
+    @Override
+    public void onAddItem(Movie movie) {
+        if (presenter.getSortPreference().equals(SORT_FAVORITE)) {
+            presenter.addMovie(movie);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SHOW_DETAIL_REQ_CODE && resultCode == SHOW_DETAIL_CHANGED_RESULT_CODE) {
+            if (presenter.getSortPreference().equals(SORT_FAVORITE)) {
+                presenter.removeMovie((Movie) data.getParcelableExtra("movie"));
+            }
         }
     }
 }

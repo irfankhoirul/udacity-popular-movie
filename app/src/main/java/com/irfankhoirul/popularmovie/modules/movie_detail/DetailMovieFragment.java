@@ -44,6 +44,8 @@ import butterknife.OnClick;
 
 import static com.irfankhoirul.popularmovie.R.id.iv_movie_backdrop;
 import static com.irfankhoirul.popularmovie.R.id.tv_release_date;
+import static com.irfankhoirul.popularmovie.modules.movie_detail.DetailMoviePresenter.ACTION_ADD_TO_FAVORITE;
+import static com.irfankhoirul.popularmovie.modules.movie_detail.DetailMoviePresenter.ACTION_REMOVE_FROM_FAVORITE;
 import static com.irfankhoirul.popularmovie.util.ConstantUtil.BACKDROP_PATH_BASE_URL;
 import static com.irfankhoirul.popularmovie.util.ConstantUtil.POSTER_PATH_BASE_URL;
 
@@ -147,6 +149,8 @@ public class DetailMovieFragment extends Fragment implements DetailMovieContract
         outState.putParcelableArrayList("trailers", presenter.getTrailerList());
         outState.putParcelableArrayList("reviews", presenter.getReviewList());
         outState.putBoolean("isFavorite", presenter.isFavoriteMovie());
+        outState.putBoolean("isReviewLoaded", presenter.isReviewLoaded());
+        outState.putBoolean("isTrailerLoaded", presenter.isTrailerLoaded());
         super.onSaveInstanceState(outState);
     }
 
@@ -203,25 +207,39 @@ public class DetailMovieFragment extends Fragment implements DetailMovieContract
             if (savedInstanceState.getParcelable("movie") != null) {
                 presenter.setMovie((Movie) savedInstanceState.getParcelable("movie"));
             }
-            if (savedInstanceState.getParcelableArrayList("trailers") != null) {
-                ArrayList<Trailer> trailers = savedInstanceState.getParcelableArrayList("trailers");
-                presenter.setTrailerList(trailers);
-                setTrailerLoading(false);
-                if (trailers != null && trailers.size() > 0) {
-                    setHasTrailer(trailers.get(0), presenter.getMovie().getBackdropPath());
-                }
-            }
-            if (savedInstanceState.getParcelableArrayList("reviews") != null) {
-                ArrayList<Review> reviews = savedInstanceState.getParcelableArrayList("reviews");
-                presenter.setReviewList(reviews);
-                setReviewLoading(false);
-            }
+
             if (savedInstanceState.getBoolean("isFavorite")) {
                 presenter.setIsFavoriteMovie();
-                updateFavoriteStatus(true);
+                updateFavoriteStatus(true, true);
             } else {
                 presenter.checkIsFavoriteMovie();
             }
+
+            ArrayList<Trailer> trailers = savedInstanceState.getParcelableArrayList("trailers");
+            boolean isTrailerLoaded = savedInstanceState.getBoolean("isTrailerLoaded");
+            if (trailers != null && isTrailerLoaded) {
+                presenter.setTrailerLoaded(true);
+                presenter.setTrailerList(trailers);
+                setTrailerLoading(false);
+                setHasTrailer(trailers.get(0), presenter.getMovie().getBackdropPath());
+            } else {
+                presenter.getTrailer(presenter.getMovie().getId());
+            }
+
+            ArrayList<Review> reviews = savedInstanceState.getParcelableArrayList("reviews");
+            boolean isReviewLoaded = savedInstanceState.getBoolean("isReviewLoaded");
+            if (reviews != null && isReviewLoaded) {
+                presenter.setReviewLoaded(true);
+                if (reviews.size() > 0) {
+                    presenter.setReviewList(reviews);
+                } else {
+                    showNoReview();
+                }
+                setReviewLoading(false);
+            } else {
+                presenter.getReviews(presenter.getMovie().getId(), DetailMoviePresenter.INITIAL_PAGE);
+            }
+
         } else if (getArguments() != null && getArguments().getParcelable("movie") != null) {
             presenter.setMovie((Movie) getArguments().getParcelable("movie"));
 
@@ -236,7 +254,6 @@ public class DetailMovieFragment extends Fragment implements DetailMovieContract
     }
 
     private void showMovieData() {
-
         if (isTablet) {
             if (movieListFragmentListener != null) {
                 movieListFragmentListener.onShowItem(presenter.getMovie().getTitle());
@@ -401,17 +418,21 @@ public class DetailMovieFragment extends Fragment implements DetailMovieContract
     }
 
     @Override
-    public void updateFavoriteStatus(boolean isFavorite) {
+    public void updateFavoriteStatus(boolean isInitialize, boolean isFavorite) {
         if (isTablet) {
             if (isFavorite) {
                 fab.setImageResource(R.drawable.ic_favorite_black_24dp);
+                if (!isInitialize) {
+                    movieListFragmentListener.onAddItem(presenter.getMovie());
+                }
             } else {
                 fab.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+                movieListFragmentListener.onRemoveItem(presenter.getMovie());
             }
             fab.setVisibility(View.VISIBLE);
         } else {
             if (movieDetailFragmentListener != null) {
-                movieDetailFragmentListener.onFavoriteChanged(isFavorite);
+                movieDetailFragmentListener.onFavoriteChanged(presenter.getMovie(), isFavorite);
             }
         }
     }
@@ -421,8 +442,6 @@ public class DetailMovieFragment extends Fragment implements DetailMovieContract
         Snackbar snackbar = Snackbar
                 .make(llContainer, message, Snackbar.LENGTH_LONG);
 
-        snackbar.setActionTextColor(ContextCompat.getColor(activity, R.color.red_700));
-
         View sbView = snackbar.getView();
         sbView.setBackgroundColor(ContextCompat.getColor(activity, R.color.red_100));
         TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
@@ -430,13 +449,44 @@ public class DetailMovieFragment extends Fragment implements DetailMovieContract
         snackbar.show();
     }
 
-    public interface MovieListFragmentListener {
+    @Override
+    public void showSuccess(final int actionType, String message) {
+        Snackbar snackbar = Snackbar
+                .make(llContainer, message, Snackbar.LENGTH_LONG);
+
+        snackbar.setActionTextColor(ContextCompat.getColor(this.activity, R.color.light_green_700));
+
+        snackbar.setAction("UNDO", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (actionType == ACTION_ADD_TO_FAVORITE) {
+                    presenter.removeFromFavorite();
+                } else if (actionType == ACTION_REMOVE_FROM_FAVORITE) {
+                    presenter.addToFavorite(System.currentTimeMillis());
+                }
+            }
+        });
+
+        View sbView = snackbar.getView();
+        sbView.setBackgroundColor(ContextCompat.getColor(activity, R.color.light_green_100));
+        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setTextColor(ContextCompat.getColor(activity, R.color.light_green_700));
+        snackbar.show();
+    }
+
+    public interface BaseMovieFragmentListener {
         void onShowItem(String title);
     }
 
-    public interface MovieDetailFragmentListener extends MovieListFragmentListener {
+    public interface MovieListFragmentListener extends BaseMovieFragmentListener {
+        void onRemoveItem(Movie movie);
+
+        void onAddItem(Movie movie);
+    }
+
+    public interface MovieDetailFragmentListener extends BaseMovieFragmentListener {
         void onTrailerLoaded(Trailer trailer, String backdropUrl);
 
-        void onFavoriteChanged(boolean isFavorite);
+        void onFavoriteChanged(Movie movie, boolean isFavorite);
     }
 }

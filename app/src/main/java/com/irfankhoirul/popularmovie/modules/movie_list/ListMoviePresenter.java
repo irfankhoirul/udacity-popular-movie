@@ -20,6 +20,10 @@ import java.util.ArrayList;
 
 import io.reactivex.annotations.NonNull;
 
+import static com.irfankhoirul.popularmovie.modules.movie_list.ListMovieViewState.STATE_IDLE;
+import static com.irfankhoirul.popularmovie.modules.movie_list.ListMovieViewState.STATE_LOADING_FAVORITE;
+import static com.irfankhoirul.popularmovie.modules.movie_list.ListMovieViewState.STATE_LOADING_MOVIE;
+
 /*
  * Copyright 2017.  Irfan Khoirul Muhlishin
  *
@@ -69,6 +73,7 @@ class ListMoviePresenter implements ListMovieContract.Presenter {
 
     @Override
     public void getMovies(final String sort, final int page) {
+        mView.setCurrentState(STATE_LOADING_MOVIE);
         if (totalPage != 0) {
             if (page > totalPage) {
                 return;
@@ -84,68 +89,110 @@ class ListMoviePresenter implements ListMovieContract.Presenter {
         } else {
             mView.setLoadMore(true);
         }
+        final String tmpSortPreference = getSortPreference();
+        setSortPreference(sort);
         movieDataSource.getMovies(sort, page, new RemoteDataObserver<Movie>() {
             @Override
             public void onNext(@NonNull DataResult<Movie> dataResult) {
-                if (dataResult != null) {
-                    totalPage = dataResult.getTotalPages();
-                    hideLoading(page);
-                    setSortPreference(sort);
-                    currentPage = dataResult.getPage();
-                    movies.addAll(dataResult.getResults());
-                    mView.updateMovieList();
-                } else {
-                    onError(new NullPointerException("Data Result Is Null!"));
+                try {
+                    if (dataResult != null) {
+                        hideLoading(page); //Expected exception here if when activity recreated
+                        totalPage = dataResult.getTotalPages();
+                        currentPage = dataResult.getPage();
+                        movies.addAll(dataResult.getResults());
+                        mView.updateMovieList();
+                        mView.setCurrentState(STATE_IDLE);
+                    } else {
+                        onError(new NullPointerException("Data Result Is Null!"));
+                    }
+                } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
                 }
             }
 
             @Override
-            public void onError(@NonNull Throwable e) {
-                super.onError(e);
-                hideLoading(page);
-                mView.showError(activity.getString(R.string.message_error_load_data));
+            public void onError(@NonNull Throwable t) {
+                super.onError(t);
+                try {
+                    setSortPreference(tmpSortPreference);
+                    hideLoading(page);
+                    mView.showError(activity.getString(R.string.message_error_load_data));
+                    mView.setCurrentState(STATE_IDLE);
+                } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
 
     @Override
+    public void addMovie(Movie movie) {
+        movies.add(0, movie);
+        mView.updateMovieList();
+    }
+
+    @Override
+    public void removeMovie(Movie movie) {
+        for (int i = 0; i < movies.size(); i++) {
+            if (movie.getId() == movies.get(i).getId()) {
+                movies.remove(i);
+                break;
+            }
+        }
+        mView.updateMovieList();
+    }
+
+    @Override
     public void getFavoriteMovies() {
+        mView.setCurrentState(STATE_LOADING_FAVORITE);
         mView.setLoading(true, activity.getString(R.string.message_loading_favorite_movies));
+        final String tmpSortPreference = getSortPreference();
+        setSortPreference(ConstantUtil.SORT_FAVORITE);
         favoriteMovieDataSource.getAll(new FavoriteDataObserver<Cursor>() {
             @Override
             public void onNext(@NonNull Cursor o) {
-                setSortPreference(ConstantUtil.SORT_FAVORITE);
-                movies.clear();
-                if (o.getCount() > 0) {
-                    while (o.moveToNext()) {
-                        Movie movie = new Movie();
-                        movie.setId(o.getLong(o.getColumnIndex(FavoriteMovieContract.MovieEntry.COLUMN_ID)));
-                        movie.setDateAdded(o.getLong(o.getColumnIndex(FavoriteMovieContract.MovieEntry.COLUMN_DATE_ADDED)));
-                        movie.setAdult(o.getInt(o.getColumnIndex(FavoriteMovieContract.MovieEntry.COLUMN_ADULT)) == 1);
-                        movie.setBackdropPath(o.getString(o.getColumnIndex(FavoriteMovieContract.MovieEntry.COLUMN_BACKDROP_PATH)));
-                        movie.setOriginalLanguage(o.getString(o.getColumnIndex(FavoriteMovieContract.MovieEntry.COLUMN_ORIGINAL_LANGUAGE)));
-                        movie.setOriginalTitle(o.getString(o.getColumnIndex(FavoriteMovieContract.MovieEntry.COLUMN_ORIGINAL_TITLE)));
-                        movie.setOverview(o.getString(o.getColumnIndex(FavoriteMovieContract.MovieEntry.COLUMN_OVERVIEW)));
-                        movie.setPopularity(o.getDouble(o.getColumnIndex(FavoriteMovieContract.MovieEntry.COLUMN_POPULARITY)));
-                        movie.setPosterPath(o.getString(o.getColumnIndex(FavoriteMovieContract.MovieEntry.COLUMN_POSTER_PATH)));
-                        movie.setReleaseDate(o.getString(o.getColumnIndex(FavoriteMovieContract.MovieEntry.COLUMN_RELEASE_DATE)));
-                        movie.setTitle(o.getString(o.getColumnIndex(FavoriteMovieContract.MovieEntry.COLUMN_TITLE)));
-                        movie.setVideo(o.getInt(o.getColumnIndex(FavoriteMovieContract.MovieEntry.COLUMN_VIDEO)) == 1);
-                        movie.setVoteAverage(o.getDouble(o.getColumnIndex(FavoriteMovieContract.MovieEntry.COLUMN_VOTE_AVERAGE)));
-                        movie.setVoteCount(o.getInt(o.getColumnIndex(FavoriteMovieContract.MovieEntry.COLUMN_VOTE_COUNT)));
+                try {
+                    movies.clear();
+                    if (o.getCount() > 0) {
+                        while (o.moveToNext()) {
+                            Movie movie = new Movie();
+                            movie.setId(o.getLong(o.getColumnIndex(FavoriteMovieContract.MovieEntry.COLUMN_ID)));
+                            movie.setDateAdded(o.getLong(o.getColumnIndex(FavoriteMovieContract.MovieEntry.COLUMN_DATE_ADDED)));
+                            movie.setAdult(o.getInt(o.getColumnIndex(FavoriteMovieContract.MovieEntry.COLUMN_ADULT)) == 1);
+                            movie.setBackdropPath(o.getString(o.getColumnIndex(FavoriteMovieContract.MovieEntry.COLUMN_BACKDROP_PATH)));
+                            movie.setOriginalLanguage(o.getString(o.getColumnIndex(FavoriteMovieContract.MovieEntry.COLUMN_ORIGINAL_LANGUAGE)));
+                            movie.setOriginalTitle(o.getString(o.getColumnIndex(FavoriteMovieContract.MovieEntry.COLUMN_ORIGINAL_TITLE)));
+                            movie.setOverview(o.getString(o.getColumnIndex(FavoriteMovieContract.MovieEntry.COLUMN_OVERVIEW)));
+                            movie.setPopularity(o.getDouble(o.getColumnIndex(FavoriteMovieContract.MovieEntry.COLUMN_POPULARITY)));
+                            movie.setPosterPath(o.getString(o.getColumnIndex(FavoriteMovieContract.MovieEntry.COLUMN_POSTER_PATH)));
+                            movie.setReleaseDate(o.getString(o.getColumnIndex(FavoriteMovieContract.MovieEntry.COLUMN_RELEASE_DATE)));
+                            movie.setTitle(o.getString(o.getColumnIndex(FavoriteMovieContract.MovieEntry.COLUMN_TITLE)));
+                            movie.setVideo(o.getInt(o.getColumnIndex(FavoriteMovieContract.MovieEntry.COLUMN_VIDEO)) == 1);
+                            movie.setVoteAverage(o.getDouble(o.getColumnIndex(FavoriteMovieContract.MovieEntry.COLUMN_VOTE_AVERAGE)));
+                            movie.setVoteCount(o.getInt(o.getColumnIndex(FavoriteMovieContract.MovieEntry.COLUMN_VOTE_COUNT)));
 
-                        movies.add(movie);
+                            movies.add(movie);
+                        }
                     }
-                }
-                o.close();
+                    o.close();
 
-                mView.setLoading(false, null);
-                mView.updateMovieList();
+                    mView.setLoading(false, null);
+                    mView.updateMovieList();
+                    mView.setCurrentState(STATE_IDLE);
+                } catch (IllegalStateException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
-            public void onError(@NonNull Throwable e) {
-                super.onError(e);
+            public void onError(@NonNull Throwable t) {
+                super.onError(t);
+                try {
+                    setSortPreference(tmpSortPreference);
+                    mView.setCurrentState(STATE_IDLE);
+                } catch (IllegalStateException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -161,6 +208,11 @@ class ListMoviePresenter implements ListMovieContract.Presenter {
     @Override
     public int getCurrentPage() {
         return currentPage;
+    }
+
+    @Override
+    public void setCurrentPage(int page) {
+        currentPage = page;
     }
 
     @Override

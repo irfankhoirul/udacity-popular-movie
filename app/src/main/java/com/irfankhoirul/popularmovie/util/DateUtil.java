@@ -21,7 +21,7 @@ import java.util.Locale;
  * limitations under the License.
  */
 
-public class DateUtil {
+public final class DateUtil {
 
     public static String formatDate(String dateInput, String inputFormat, String outputFormat) {
         SimpleDateFormat sdf = new SimpleDateFormat(inputFormat, Locale.getDefault());

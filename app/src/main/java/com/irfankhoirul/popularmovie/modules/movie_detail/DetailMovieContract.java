@@ -38,9 +38,11 @@ interface DetailMovieContract {
 
         void showNoTrailer();
 
-        void updateFavoriteStatus(boolean isFavorite);
+        void updateFavoriteStatus(boolean isInitialize, boolean isFavorite);
 
         void showError(String message);
+
+        void showSuccess(int actionType, String message);
     }
 
     interface Presenter {
@@ -73,5 +75,13 @@ interface DetailMovieContract {
         void setIsFavoriteMovie();
 
         boolean isFavoriteMovie();
+
+        boolean isReviewLoaded();
+
+        void setReviewLoaded(boolean isReviewLoaded);
+
+        boolean isTrailerLoaded();
+
+        void setTrailerLoaded(boolean isTrailerLoaded);
     }
 }

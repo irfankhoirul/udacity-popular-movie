@@ -1,5 +1,6 @@
 package com.irfankhoirul.popularmovie.modules.movie_detail;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -28,6 +29,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.irfankhoirul.popularmovie.util.ConstantUtil.BACKDROP_PATH_BASE_URL;
+import static com.irfankhoirul.popularmovie.util.ConstantUtil.SHOW_DETAIL_CHANGED_RESULT_CODE;
 
 public class DetailMovieActivity extends AppCompatActivity
         implements DetailMovieFragment.MovieDetailFragmentListener {
@@ -142,7 +144,16 @@ public class DetailMovieActivity extends AppCompatActivity
     }
 
     @Override
-    public void onFavoriteChanged(boolean isFavorite) {
+    public void onFavoriteChanged(Movie movie, boolean isFavorite) {
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("movie", movie);
+
+        if (!isFavorite) {
+            setResult(SHOW_DETAIL_CHANGED_RESULT_CODE, resultIntent);
+        } else {
+            setResult(Activity.RESULT_OK);
+        }
+
         if (isFavorite) {
             fab.setImageResource(R.drawable.ic_favorite_black_24dp);
         } else {
@@ -165,4 +176,5 @@ public class DetailMovieActivity extends AppCompatActivity
             fragment.setFabClick();
         }
     }
+
 }

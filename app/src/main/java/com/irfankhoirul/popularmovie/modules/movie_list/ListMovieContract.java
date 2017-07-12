@@ -24,6 +24,8 @@ import java.util.ArrayList;
 
 interface ListMovieContract {
     interface View {
+        void setCurrentState(String state);
+
         void updateMovieList();
 
         void setLoading(boolean status, @Nullable String message);
@@ -40,9 +42,15 @@ interface ListMovieContract {
 
         void getMovies(String sort, int page);
 
+        void addMovie(Movie movie);
+
+        void removeMovie(Movie movie);
+
         void getFavoriteMovies();
 
         int getCurrentPage();
+
+        void setCurrentPage(int page);
 
         String getSortPreference();
 

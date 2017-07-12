@@ -6,7 +6,7 @@ import android.content.res.Resources;
 import android.util.DisplayMetrics;
 
 
-public class DisplayMetricUtils {
+public final class DisplayMetricUtils {
 
     public static int convertPixelsToDp(int px) {
         DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
