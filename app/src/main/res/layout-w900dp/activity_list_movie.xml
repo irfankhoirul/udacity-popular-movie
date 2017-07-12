@@ -5,6 +5,7 @@
     android:id="@+id/ll_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:baselineAligned="false"
     android:orientation="horizontal"
     tools:context=".modules.movie_list.ListMovieActivity">
 
@@ -31,7 +32,7 @@
             android:id="@+id/avi_load_more"
             style="@style/AVLoadingIndicatorView"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
+            android:layout_height="@dimen/standard_48"
             android:layout_below="@+id/swipe_refresh_layout"
             android:layout_gravity="center_horizontal"
             android:visibility="gone"
@@ -49,21 +50,22 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:contentDescription="@string/image_content_description_favorite_movie"
                 android:src="@drawable/ic_movie_favorite" />
 
             <TextView
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="32dp"
+                android:layout_marginBottom="@dimen/standard_32"
                 android:text="@string/label_no_favorite_movie_added_yet" />
 
             <Button
                 android:id="@+id/bt_pick_favorite_movie"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
+                android:paddingLeft="@dimen/standard_16"
+                android:paddingRight="@dimen/standard_16"
                 android:text="@string/label_pick_favorite_movie" />
 
         </LinearLayout>
@@ -79,14 +81,15 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
+                android:contentDescription="@string/image_content_description_offline_icon"
+                android:padding="@dimen/standard_16"
                 android:scaleType="center"
                 android:src="@drawable/ic_offline" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="32dp"
+                android:layout_marginBottom="@dimen/standard_32"
                 android:gravity="center"
                 android:text="@string/label_offline" />
 
@@ -94,8 +97,8 @@
                 android:id="@+id/bt_reload"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
+                android:paddingLeft="@dimen/standard_16"
+                android:paddingRight="@dimen/standard_16"
                 android:text="@string/label_reload" />
 
         </LinearLayout>
@@ -120,12 +123,13 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/image_content_description_no_movie_selected"
             android:src="@drawable/ic_movie" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp"
+            android:layout_marginBottom="@dimen/standard_32"
             android:text="@string/label_no_movie_selected" />
 
     </LinearLayout>

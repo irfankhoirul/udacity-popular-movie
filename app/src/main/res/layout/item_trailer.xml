@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/iv_trailer_thumbnail"
-        android:layout_width="200dp"
-        android:layout_height="100dp"
+        android:layout_width="@dimen/item_trailer_width_default"
+        android:layout_height="@dimen/item_trailer_height_default"
         android:background="@color/pure_black"
         android:contentDescription="@string/image_content_description_trailer_thumbnail"
         android:scaleType="centerCrop"
@@ -17,8 +17,8 @@
 
     <ImageView
         android:id="@+id/iv_trailer_play_button"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="@dimen/standard_32"
+        android:layout_height="@dimen/standard_32"
         android:layout_gravity="center"
         android:alpha="0.8"
         android:contentDescription="@string/image_content_description_play_button"

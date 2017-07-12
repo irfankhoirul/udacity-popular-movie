@@ -7,13 +7,14 @@
 
     <ImageView
         android:id="@+id/iv_movie_poster"
-        android:layout_width="150dp"
-        android:layout_height="225dp"
+        android:layout_width="@dimen/detail_movie_poster_width_default"
+        android:layout_height="@dimen/detail_movie_poster_height_default"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginLeft="@dimen/standard_16"
+        android:layout_marginStart="@dimen/standard_16"
+        android:layout_marginTop="@dimen/standard_16"
         android:contentDescription="@string/image_content_description_movie_poster"
         android:scaleType="centerCrop"
         app:srcCompat="@drawable/ic_movie_paceholder" />
@@ -22,23 +23,23 @@
         android:id="@+id/tv_movie_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginLeft="@dimen/standard_16"
+        android:layout_marginRight="@dimen/standard_16"
+        android:layout_marginTop="@dimen/standard_16"
         android:layout_toEndOf="@id/iv_movie_poster"
         android:layout_toRightOf="@id/iv_movie_poster"
         android:fontFamily="sans-serif-medium"
         android:maxLines="16"
         android:textColor="@color/colorAccent"
-        android:textSize="22sp" />
+        android:textSize="@dimen/text_standard_22" />
 
     <LinearLayout
         android:id="@+id/ll_rating"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_movie_title"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginLeft="@dimen/standard_16"
+        android:layout_marginRight="@dimen/standard_16"
         android:layout_toEndOf="@id/iv_movie_poster"
         android:layout_toRightOf="@id/iv_movie_poster"
         android:orientation="horizontal">
@@ -55,8 +56,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
+            android:layout_marginLeft="@dimen/standard_8"
+            android:layout_marginStart="@dimen/standard_8"
             android:orientation="vertical">
 
             <RatingBar
@@ -84,10 +85,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/ll_rating"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginLeft="@dimen/standard_16"
+        android:layout_marginRight="@dimen/standard_16"
+        android:layout_marginStart="@dimen/standard_16"
+        android:layout_marginTop="@dimen/standard_4"
         android:layout_toEndOf="@id/iv_movie_poster"
         android:layout_toRightOf="@id/iv_movie_poster"
         android:fontFamily="sans-serif-medium"
@@ -100,35 +101,35 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/iv_movie_poster"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginLeft="@dimen/standard_16"
+        android:layout_marginRight="@dimen/standard_16"
+        android:layout_marginTop="@dimen/standard_16"
         android:fontFamily="sans-serif-medium"
         android:text="@string/label_synopsis"
         android:textColor="@color/colorAccent"
-        android:textSize="20sp" />
+        android:textSize="@dimen/text_standard_20" />
 
     <TextView
         android:id="@+id/tv_synopsis"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/textView6"
-        android:layout_marginBottom="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="8dp" />
+        android:layout_marginBottom="@dimen/standard_16"
+        android:layout_marginLeft="@dimen/standard_16"
+        android:layout_marginRight="@dimen/standard_16"
+        android:layout_marginTop="@dimen/standard_8" />
 
     <TextView
         android:id="@+id/textView66"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_synopsis"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginLeft="@dimen/standard_16"
+        android:layout_marginRight="@dimen/standard_16"
         android:fontFamily="sans-serif-medium"
         android:text="@string/label_trailer"
         android:textColor="@color/colorAccent"
-        android:textSize="20sp" />
+        android:textSize="@dimen/text_standard_20" />
 
     <FrameLayout
         android:id="@+id/fl_trailer"
@@ -140,16 +141,16 @@
             android:id="@+id/rv_trailers"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="@dimen/standard_8" />
 
         <LinearLayout
             android:id="@+id/ll_no_trailer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_margin="8dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_margin="@dimen/standard_8"
+            android:layout_marginLeft="@dimen/standard_16"
+            android:layout_marginRight="@dimen/standard_16"
             android:orientation="vertical"
             android:visibility="gone">
 
@@ -164,7 +165,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/standard_8"
                 android:text="@string/label_no_trailer_found" />
         </LinearLayout>
 
@@ -174,8 +175,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginLeft="@dimen/standard_16"
+            android:layout_marginRight="@dimen/standard_16"
             android:visibility="visible"
             app:indicatorColor="@color/colorAccent"
             app:indicatorName="BallPulseIndicator" />
@@ -187,13 +188,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/fl_trailer"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginLeft="@dimen/standard_16"
+        android:layout_marginRight="@dimen/standard_16"
+        android:layout_marginTop="@dimen/standard_16"
         android:fontFamily="sans-serif-medium"
         android:text="@string/label_review"
         android:textColor="@color/colorAccent"
-        android:textSize="20sp" />
+        android:textSize="@dimen/text_standard_20" />
 
     <LinearLayout
         android:id="@+id/ll_review"
@@ -206,16 +207,16 @@
             android:id="@+id/rv_reviews"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="@dimen/standard_8" />
 
         <LinearLayout
             android:id="@+id/ll_no_review"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_margin="8dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_margin="@dimen/standard_8"
+            android:layout_marginLeft="@dimen/standard_16"
+            android:layout_marginRight="@dimen/standard_16"
             android:orientation="vertical"
             android:visibility="gone">
 
@@ -230,7 +231,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/standard_8"
                 android:text="@string/label_no_review_found" />
         </LinearLayout>
 
@@ -240,8 +241,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginLeft="@dimen/standard_16"
+            android:layout_marginRight="@dimen/standard_16"
             android:visibility="visible"
             app:indicatorColor="@color/colorAccent"
             app:indicatorName="BallPulseIndicator" />

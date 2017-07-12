@@ -10,4 +10,13 @@
 
     <dimen name="marg_backdrop_left">0dp</dimen>
     <dimen name="marg_backdrop_right">0dp</dimen>
+    <dimen name="activity_detail_app_bar_height">180dp</dimen>
+    <dimen name="detail_movie_poster_width_default">150dp</dimen>
+    <dimen name="detail_movie_poster_height_default">225dp</dimen>
+    <dimen name="text_standard_22">22sp</dimen>
+    <dimen name="text_standard_20">20sp</dimen>
+    <dimen name="item_movie_poster_height_default">250dp</dimen>
+    <dimen name="text_standard_16">16sp</dimen>
+    <dimen name="item_trailer_width_default">200dp</dimen>
+    <dimen name="item_trailer_height_default">100dp</dimen>
 </resources>
