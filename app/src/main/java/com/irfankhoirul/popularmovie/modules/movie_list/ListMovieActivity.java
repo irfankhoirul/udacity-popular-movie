@@ -72,6 +72,7 @@ public class ListMovieActivity extends AppCompatActivity
     private MultiPageRecyclerViewScrollListener moviesScrollListener;
     private boolean isTablet;
     private String currentState;
+    private DetailMovieFragment fragment;
 
     @Override
     protected void onDestroy() {
@@ -128,6 +129,16 @@ public class ListMovieActivity extends AppCompatActivity
 
     private void setupMovieData(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
+            if (isTablet) {
+                llNoSelectedMovie.setVisibility(View.GONE);
+                itemDetailContainer.setVisibility(View.VISIBLE);
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                fragment = (DetailMovieFragment) getSupportFragmentManager().getFragment(savedInstanceState, "detailMovieFragment");
+                fragmentManager.beginTransaction()
+                        .replace(R.id.item_detail_container, fragment)
+                        .commit();
+            }
+
             if (savedInstanceState.getString("toolbar_title") != null &&
                     getSupportActionBar() != null) {
                 getSupportActionBar().setTitle(savedInstanceState.getString("toolbar_title"));
@@ -218,6 +229,9 @@ public class ListMovieActivity extends AppCompatActivity
         }
         outState.putInt("page", presenter.getCurrentPage());
         outState.putString("viewState", currentState);
+        if (isTablet) {
+            getSupportFragmentManager().putFragment(outState, "detailMovieFragment", fragment);
+        }
         super.onSaveInstanceState(outState);
     }
 
@@ -380,7 +394,7 @@ public class ListMovieActivity extends AppCompatActivity
             llNoSelectedMovie.setVisibility(View.GONE);
             itemDetailContainer.setVisibility(View.VISIBLE);
             FragmentManager fragmentManager = getSupportFragmentManager();
-            DetailMovieFragment fragment = DetailMovieFragment.newInstance(movie, isTablet);
+            fragment = DetailMovieFragment.newInstance(movie, true);
             fragmentManager.beginTransaction()
                     .replace(R.id.item_detail_container, fragment)
                     .commit();
