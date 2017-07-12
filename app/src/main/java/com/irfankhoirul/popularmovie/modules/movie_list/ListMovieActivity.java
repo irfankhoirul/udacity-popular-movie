@@ -58,6 +58,10 @@ public class ListMovieActivity extends AppCompatActivity
     LinearLayout llNoFavoriteMovie;
     @BindView(R.id.bt_pick_favorite_movie)
     Button btPickFavoriteMovie;
+    @BindView(R.id.ll_offline)
+    LinearLayout llOffline;
+    @BindView(R.id.bt_reload)
+    Button btReload;
     LinearLayout llNoSelectedMovie;
     FrameLayout itemDetailContainer;
 
@@ -86,6 +90,27 @@ public class ListMovieActivity extends AppCompatActivity
             getSupportActionBar().setTitle(R.string.title_popular_movies);
         }
         presenter.getMovies(SORT_POPULAR, ListMoviePresenter.INITIAL_PAGE);
+    }
+
+    @OnClick(R.id.bt_reload)
+    public void setBtReload() {
+        if (presenter.getSortPreference().equals(SORT_FAVORITE)) {
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setTitle(R.string.title_favorite_movies);
+            }
+            presenter.getFavoriteMovies();
+        } else {
+            if (presenter.getSortPreference().equals(SORT_POPULAR)) {
+                if (getSupportActionBar() != null) {
+                    getSupportActionBar().setTitle(R.string.title_popular_movies);
+                }
+            } else if (presenter.getSortPreference().equals(SORT_TOP_RATED)) {
+                if (getSupportActionBar() != null) {
+                    getSupportActionBar().setTitle(R.string.title_top_rated_movies);
+                }
+            }
+            presenter.getMovies(presenter.getSortPreference(), ListMoviePresenter.INITIAL_PAGE);
+        }
     }
 
     @Override
@@ -222,6 +247,7 @@ public class ListMovieActivity extends AppCompatActivity
     public void updateMovieList() {
         movieAdapter.notifyDataSetChanged();
         moviesScrollListener.isLoading(false);
+        llOffline.setVisibility(View.GONE);
         if (presenter.getMovieList().size() > 0) {
             llNoFavoriteMovie.setVisibility(View.GONE);
             swipeRefreshLayout.setVisibility(View.VISIBLE);
@@ -325,6 +351,11 @@ public class ListMovieActivity extends AppCompatActivity
 
     @Override
     public void showError(String message) {
+        if (presenter.getCurrentPage() == ListMoviePresenter.INITIAL_PAGE) {
+            llNoFavoriteMovie.setVisibility(View.GONE);
+            swipeRefreshLayout.setVisibility(View.GONE);
+            llOffline.setVisibility(View.VISIBLE);
+        }
         Snackbar snackbar = Snackbar
                 .make(llContainer, message, Snackbar.LENGTH_LONG)
                 .setAction(R.string.action_retry, new View.OnClickListener() {

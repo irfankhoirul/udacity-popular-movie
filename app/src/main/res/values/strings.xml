@@ -30,4 +30,6 @@
     <string name="label_no_favorite_movie_added_yet">No favorite movie added yet</string>
     <string name="label_pick_favorite_movie">Pick favorite movie</string>
     <string name="label_no_movie_selected">No movie selected</string>
+    <string name="label_offline">Could not load data\nPlease check your internet connection</string>
+    <string name="label_reload">Reload</string>
 </resources>
