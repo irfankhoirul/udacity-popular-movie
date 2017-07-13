@@ -1,17 +1,18 @@
 # Udacity Popular Movie
 
-This is my version of Udacity's Popular Movie project. In this project implementing The Movie DB API of popular movies, top rated movies, movie's trailers and reviews. It also has endless scroll on movies list. It is also implementing Model View Presenter (MVP) architecture. I build this as part of Udacity Associate Android Developer Fast Track Program i've enrolled.
+This is my version of Udacity's Popular Movie project. In this project implementing [The Movie DB](https://www.themoviedb.org/) API of popular movies, top rated movies, movie's trailers and reviews. It also has endless scroll on movies list. It is also implementing Model View Presenter (MVP) architecture. I build this as part of [Udacity Associate Android Developer Fast Track](https://www.udacity.com/course/associate-android-developer-fast-track--nd818) program i've enrolled.
 
 ### What I Use
   - Model View Presenter / MVP Architecture
-  - Content Provider
-  - Android Room Persistence
-  - Butterknife
-  - Retrofit
-  - RxJava & RxAndroid
-  - Glide
-  - GlidePalette
-  - AVLoadingIndicatorView
+  - [Content Provider](https://developer.android.com/reference/android/content/ContentProvider.html)
+  - [Android Room Persistence](https://developer.android.com/topic/libraries/architecture/room.html)
+  - [ButterKnife](https://github.com/JakeWharton/butterknife)
+  - [Retrofit](https://github.com/square/retrofit)
+  - [RxJava](https://github.com/ReactiveX/RxJava)
+  - [RxAndroid](https://github.com/ReactiveX/RxAndroid)
+  - [Glide](https://github.com/bumptech/glide)
+  - [GlidePalette](https://github.com/florent37/GlidePalette)
+  - [AVLoadingIndicatorView](https://github.com/81813780/AVLoadingIndicatorView)
 
 ### User Interface
 
@@ -22,6 +23,10 @@ This is my version of Udacity's Popular Movie project. In this project implement
 ![User Interface](../master/ui/tablet-portrait.png)
 
 ![User Interface](../master/ui/tablet-landscape.png)
+
+### How To Use
+  - Get your [The Movie DB](https://www.themoviedb.org/) API key
+  - Put your The Movie DB API Key in the TheMovieDBApiKey in gradle.properties
 
 ## License
 
