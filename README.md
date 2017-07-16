@@ -18,6 +18,8 @@ This is my version of Udacity's Popular Movie project. In this project implement
 
 ![User Interface](../master/ui/phone.png)
 
+![User Interface](../master/ui/phone-landscape.png)
+
 ![User Interface](../master/ui/phone-details.png)
 
 ![User Interface](../master/ui/tablet-portrait.png)
