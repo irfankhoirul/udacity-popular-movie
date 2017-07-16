@@ -26,7 +26,7 @@ This is my version of Udacity's Popular Movie project. In this project implement
 
 ### How To Use
   - Get your [The Movie DB](https://www.themoviedb.org/) API key
-  - Put your The Movie DB API Key in the TheMovieDBApiKey in gradle.properties
+  - Put your The Movie DB API Key in the TheMovieDBApiKey in api.properties
 
 ## License
 
