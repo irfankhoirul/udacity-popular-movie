@@ -1,7 +1,3 @@
-package com.irfankhoirul.popularmovie.util;
-
-import com.bumptech.glide.module.AppGlideModule;
-
 /*
  * Copyright 2017.  Irfan Khoirul Muhlishin
  *
@@ -17,6 +13,10 @@ import com.bumptech.glide.module.AppGlideModule;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.irfankhoirul.popularmovie.util;
+
+import com.bumptech.glide.module.AppGlideModule;
 
 @com.bumptech.glide.annotation.GlideModule
 public class GlideModule extends AppGlideModule {

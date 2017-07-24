@@ -1,11 +1,3 @@
-package com.irfankhoirul.popularmovie.data.source.remote;
-
-import com.irfankhoirul.popularmovie.data.pojo.DataResult;
-
-import io.reactivex.Observer;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.disposables.Disposable;
-
 /*
  * Copyright 2017.  Irfan Khoirul Muhlishin
  *
@@ -21,6 +13,14 @@ import io.reactivex.disposables.Disposable;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.irfankhoirul.popularmovie.data.source.remote;
+
+import com.irfankhoirul.popularmovie.data.pojo.DataResult;
+
+import io.reactivex.Observer;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
 
 public abstract class RemoteDataObserver<T> implements Observer<DataResult<T>> {
     @Override

@@ -1,10 +1,3 @@
-package com.irfankhoirul.popularmovie.util;
-
-import android.graphics.Rect;
-import android.support.annotation.IntRange;
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
-
 /*
  * Copyright 2017.  Irfan Khoirul Muhlishin
  *
@@ -20,6 +13,13 @@ import android.view.View;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.irfankhoirul.popularmovie.util;
+
+import android.graphics.Rect;
+import android.support.annotation.IntRange;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 public class RecyclerViewMarginDecoration extends RecyclerView.ItemDecoration {
     public static final int ORIENTATION_VERTICAL = 1;

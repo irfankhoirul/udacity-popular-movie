@@ -1,13 +1,3 @@
-package com.irfankhoirul.popularmovie.data.source.local.favorite;
-
-import android.arch.persistence.room.Database;
-import android.arch.persistence.room.Room;
-import android.arch.persistence.room.RoomDatabase;
-import android.content.Context;
-import android.support.annotation.VisibleForTesting;
-
-import com.irfankhoirul.popularmovie.data.pojo.Movie;
-
 /*
  * Copyright 2017.  Irfan Khoirul Muhlishin
  *
@@ -23,6 +13,16 @@ import com.irfankhoirul.popularmovie.data.pojo.Movie;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.irfankhoirul.popularmovie.data.source.local.favorite;
+
+import android.arch.persistence.room.Database;
+import android.arch.persistence.room.Room;
+import android.arch.persistence.room.RoomDatabase;
+import android.content.Context;
+import android.support.annotation.VisibleForTesting;
+
+import com.irfankhoirul.popularmovie.data.pojo.Movie;
 
 @Database(entities = {Movie.class}, version = 1)
 public abstract class FavoriteMovieDatabase extends RoomDatabase {

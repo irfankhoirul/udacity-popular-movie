@@ -1,8 +1,3 @@
-package com.irfankhoirul.popularmovie.data.source.local.preference;
-
-import android.content.Context;
-import android.content.SharedPreferences;
-
 /*
  * Copyright 2017.  Irfan Khoirul Muhlishin
  *
@@ -18,6 +13,11 @@ import android.content.SharedPreferences;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.irfankhoirul.popularmovie.data.source.local.preference;
+
+import android.content.Context;
+import android.content.SharedPreferences;
 
 public class PreferenceDataSourceImpl implements PreferenceDataSource {
     private static final String SHARED_PREFERENCE_NAME = "PreferenceDataSourceImpl";

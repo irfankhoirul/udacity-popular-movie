@@ -1,5 +1,3 @@
-package com.irfankhoirul.popularmovie.data.source.local.preference;
-
 /*
  * Copyright 2017.  Irfan Khoirul Muhlishin
  *
@@ -15,6 +13,8 @@ package com.irfankhoirul.popularmovie.data.source.local.preference;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.irfankhoirul.popularmovie.data.source.local.preference;
 
 public interface PreferenceDataSource {
     String getSortPreference();

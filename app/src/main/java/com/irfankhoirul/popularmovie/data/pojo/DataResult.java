@@ -1,10 +1,3 @@
-package com.irfankhoirul.popularmovie.data.pojo;
-
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
-import java.util.List;
-
 /*
  * Copyright 2017.  Irfan Khoirul Muhlishin
  *
@@ -20,6 +13,13 @@ import java.util.List;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.irfankhoirul.popularmovie.data.pojo;
+
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 public class DataResult<T> {
     @SerializedName("page")

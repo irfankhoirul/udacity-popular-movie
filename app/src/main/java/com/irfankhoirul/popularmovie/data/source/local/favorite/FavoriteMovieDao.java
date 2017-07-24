@@ -1,17 +1,3 @@
-package com.irfankhoirul.popularmovie.data.source.local.favorite;
-
-import android.arch.persistence.room.Dao;
-import android.arch.persistence.room.Insert;
-import android.arch.persistence.room.Query;
-import android.arch.persistence.room.Update;
-import android.database.Cursor;
-
-import com.irfankhoirul.popularmovie.data.pojo.Movie;
-
-import static android.arch.persistence.room.OnConflictStrategy.REPLACE;
-import static com.irfankhoirul.popularmovie.data.source.local.favorite.FavoriteMovieContract.MovieEntry.COLUMN_ID;
-import static com.irfankhoirul.popularmovie.data.source.local.favorite.FavoriteMovieContract.MovieEntry.TABLE_NAME;
-
 /*
  * Copyright 2017.  Irfan Khoirul Muhlishin
  *
@@ -27,6 +13,20 @@ import static com.irfankhoirul.popularmovie.data.source.local.favorite.FavoriteM
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.irfankhoirul.popularmovie.data.source.local.favorite;
+
+import android.arch.persistence.room.Dao;
+import android.arch.persistence.room.Insert;
+import android.arch.persistence.room.Query;
+import android.arch.persistence.room.Update;
+import android.database.Cursor;
+
+import com.irfankhoirul.popularmovie.data.pojo.Movie;
+
+import static android.arch.persistence.room.OnConflictStrategy.REPLACE;
+import static com.irfankhoirul.popularmovie.data.source.local.favorite.FavoriteMovieContract.MovieEntry.COLUMN_ID;
+import static com.irfankhoirul.popularmovie.data.source.local.favorite.FavoriteMovieContract.MovieEntry.TABLE_NAME;
 
 @Dao
 public interface FavoriteMovieDao {

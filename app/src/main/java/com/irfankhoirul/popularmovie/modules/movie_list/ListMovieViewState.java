@@ -1,5 +1,3 @@
-package com.irfankhoirul.popularmovie.modules.movie_list;
-
 /*
  * Copyright 2017.  Irfan Khoirul Muhlishin
  *
@@ -15,6 +13,8 @@ package com.irfankhoirul.popularmovie.modules.movie_list;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.irfankhoirul.popularmovie.modules.movie_list;
 
 public final class ListMovieViewState {
     public static final String STATE_IDLE = "idle";

@@ -1,11 +1,3 @@
-package com.irfankhoirul.popularmovie.data.pojo;
-
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
 /*
  * Copyright 2017.  Irfan Khoirul Muhlishin
  *
@@ -21,6 +13,14 @@ import com.google.gson.annotations.SerializedName;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.irfankhoirul.popularmovie.data.pojo;
+
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 public class Review implements Parcelable {
     public static final Creator<Review> CREATOR = new Creator<Review>() {

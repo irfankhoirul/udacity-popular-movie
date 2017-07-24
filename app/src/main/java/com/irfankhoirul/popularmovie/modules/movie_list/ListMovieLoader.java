@@ -1,9 +1,3 @@
-package com.irfankhoirul.popularmovie.modules.movie_list;
-
-import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
-
 /*
  * Copyright 2017.  Irfan Khoirul Muhlishin
  *
@@ -19,6 +13,12 @@ import android.support.v4.content.Loader;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.irfankhoirul.popularmovie.modules.movie_list;
+
+import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 
 public class ListMovieLoader implements LoaderManager.LoaderCallbacks {
     @Override

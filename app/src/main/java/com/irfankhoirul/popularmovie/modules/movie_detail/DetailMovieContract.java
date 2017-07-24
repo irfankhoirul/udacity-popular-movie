@@ -1,11 +1,3 @@
-package com.irfankhoirul.popularmovie.modules.movie_detail;
-
-import com.irfankhoirul.popularmovie.data.pojo.Movie;
-import com.irfankhoirul.popularmovie.data.pojo.Review;
-import com.irfankhoirul.popularmovie.data.pojo.Trailer;
-
-import java.util.ArrayList;
-
 /*
  * Copyright 2017.  Irfan Khoirul Muhlishin
  *
@@ -21,6 +13,14 @@ import java.util.ArrayList;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.irfankhoirul.popularmovie.modules.movie_detail;
+
+import com.irfankhoirul.popularmovie.data.pojo.Movie;
+import com.irfankhoirul.popularmovie.data.pojo.Review;
+import com.irfankhoirul.popularmovie.data.pojo.Trailer;
+
+import java.util.ArrayList;
 
 interface DetailMovieContract {
     interface View {

@@ -1,8 +1,3 @@
-package com.irfankhoirul.popularmovie.util;
-
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-
 /*
  * Copyright 2017.  Irfan Khoirul Muhlishin
  *
@@ -18,6 +13,11 @@ import android.support.v7.widget.RecyclerView;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.irfankhoirul.popularmovie.util;
+
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 
 public class MultiPageRecyclerViewScrollListener extends RecyclerView.OnScrollListener {
 

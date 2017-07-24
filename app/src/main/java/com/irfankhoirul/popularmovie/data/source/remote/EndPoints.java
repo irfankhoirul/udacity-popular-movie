@@ -1,16 +1,3 @@
-package com.irfankhoirul.popularmovie.data.source.remote;
-
-import com.irfankhoirul.popularmovie.BuildConfig;
-import com.irfankhoirul.popularmovie.data.pojo.DataResult;
-import com.irfankhoirul.popularmovie.data.pojo.Movie;
-import com.irfankhoirul.popularmovie.data.pojo.Review;
-import com.irfankhoirul.popularmovie.data.pojo.Trailer;
-
-import io.reactivex.Observable;
-import retrofit2.http.GET;
-import retrofit2.http.Path;
-import retrofit2.http.Query;
-
 /*
  * Copyright 2017.  Irfan Khoirul Muhlishin
  *
@@ -26,6 +13,19 @@ import retrofit2.http.Query;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.irfankhoirul.popularmovie.data.source.remote;
+
+import com.irfankhoirul.popularmovie.BuildConfig;
+import com.irfankhoirul.popularmovie.data.pojo.DataResult;
+import com.irfankhoirul.popularmovie.data.pojo.Movie;
+import com.irfankhoirul.popularmovie.data.pojo.Review;
+import com.irfankhoirul.popularmovie.data.pojo.Trailer;
+
+import io.reactivex.Observable;
+import retrofit2.http.GET;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 interface EndPoints {
     String MOVIE_END_POINT = "movie/{sort}?api_key=" + BuildConfig.TMDB_API_KEY;

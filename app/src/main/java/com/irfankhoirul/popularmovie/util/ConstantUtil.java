@@ -1,5 +1,3 @@
-package com.irfankhoirul.popularmovie.util;
-
 /*
  * Copyright 2017.  Irfan Khoirul Muhlishin
  *
@@ -15,6 +13,8 @@ package com.irfankhoirul.popularmovie.util;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.irfankhoirul.popularmovie.util;
 
 public final class ConstantUtil {
     public static final String POSTER_PATH_BASE_URL = "https://image.tmdb.org/t/p/w342";
