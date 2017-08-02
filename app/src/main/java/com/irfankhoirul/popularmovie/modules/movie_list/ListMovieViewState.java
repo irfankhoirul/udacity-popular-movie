@@ -21,4 +21,5 @@ public final class ListMovieViewState {
     public static final String STATE_SHOW_SORT_DIALOG = "show_sort_dialog";
     public static final String STATE_LOADING_MOVIE = "loading_movie";
     public static final String STATE_LOADING_FAVORITE = "loading_favorite";
+    public static final String STATE_NO_CONNECTION = "no_connection";
 }

@@ -146,13 +146,15 @@ public class ListMovieActivity extends AppCompatActivity
     private void setupMovieData(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             if (isTablet) {
-                llNoSelectedMovie.setVisibility(View.GONE);
-                itemDetailContainer.setVisibility(View.VISIBLE);
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                fragment = (DetailMovieFragment) getSupportFragmentManager().getFragment(savedInstanceState, "detailMovieFragment");
-                fragmentManager.beginTransaction()
-                        .replace(R.id.item_detail_container, fragment)
-                        .commit();
+                if (fragment != null) {
+                    llNoSelectedMovie.setVisibility(View.GONE);
+                    itemDetailContainer.setVisibility(View.VISIBLE);
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    fragment = (DetailMovieFragment) getSupportFragmentManager().getFragment(savedInstanceState, "detailMovieFragment");
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.item_detail_container, fragment)
+                            .commit();
+                }
             }
 
             if (savedInstanceState.getString("toolbar_title") != null &&
@@ -182,6 +184,9 @@ public class ListMovieActivity extends AppCompatActivity
                         break;
                     case ListMovieViewState.STATE_LOADING_FAVORITE:
                         presenter.getFavoriteMovies();
+                        break;
+                    case ListMovieViewState.STATE_NO_CONNECTION:
+                        showNoConnection();
                         break;
                 }
             }
@@ -246,7 +251,9 @@ public class ListMovieActivity extends AppCompatActivity
         outState.putInt("page", presenter.getCurrentPage());
         outState.putString("viewState", currentState);
         if (isTablet) {
-            getSupportFragmentManager().putFragment(outState, "detailMovieFragment", fragment);
+            if (fragment != null) {
+                getSupportFragmentManager().putFragment(outState, "detailMovieFragment", fragment);
+            }
         }
         super.onSaveInstanceState(outState);
     }
@@ -382,9 +389,7 @@ public class ListMovieActivity extends AppCompatActivity
     @Override
     public void showError(String message) {
         if (presenter.getCurrentPage() == ListMoviePresenter.INITIAL_PAGE) {
-            llNoFavoriteMovie.setVisibility(View.GONE);
-            swipeRefreshLayout.setVisibility(View.GONE);
-            llOffline.setVisibility(View.VISIBLE);
+            showNoConnection();
         }
         Snackbar snackbar = Snackbar
                 .make(llContainer, message, Snackbar.LENGTH_LONG)
@@ -402,6 +407,12 @@ public class ListMovieActivity extends AppCompatActivity
         TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
         textView.setTextColor(ContextCompat.getColor(this, R.color.red_700));
         snackbar.show();
+    }
+
+    private void showNoConnection() {
+        llNoFavoriteMovie.setVisibility(View.GONE);
+        swipeRefreshLayout.setVisibility(View.GONE);
+        llOffline.setVisibility(View.VISIBLE);
     }
 
     @Override

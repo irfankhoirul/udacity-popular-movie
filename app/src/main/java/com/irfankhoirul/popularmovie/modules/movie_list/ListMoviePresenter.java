@@ -39,6 +39,7 @@ import io.reactivex.annotations.NonNull;
 import static com.irfankhoirul.popularmovie.modules.movie_list.ListMovieViewState.STATE_IDLE;
 import static com.irfankhoirul.popularmovie.modules.movie_list.ListMovieViewState.STATE_LOADING_FAVORITE;
 import static com.irfankhoirul.popularmovie.modules.movie_list.ListMovieViewState.STATE_LOADING_MOVIE;
+import static com.irfankhoirul.popularmovie.modules.movie_list.ListMovieViewState.STATE_NO_CONNECTION;
 
 class ListMoviePresenter implements ListMovieContract.Presenter {
 
@@ -117,7 +118,11 @@ class ListMoviePresenter implements ListMovieContract.Presenter {
                     setSortPreference(tmpSortPreference);
                     hideLoading(page);
                     mView.showError(activity.getString(R.string.message_error_load_data));
-                    mView.setCurrentState(STATE_IDLE);
+                    if (currentPage == ListMoviePresenter.INITIAL_PAGE) {
+                        mView.setCurrentState(STATE_NO_CONNECTION);
+                    } else {
+                        mView.setCurrentState(STATE_IDLE);
+                    }
                 } catch (IllegalArgumentException e) {
                     e.printStackTrace();
                 }
